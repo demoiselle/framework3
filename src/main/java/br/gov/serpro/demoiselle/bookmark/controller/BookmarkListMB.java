@@ -1,6 +1,6 @@
 package br.gov.serpro.demoiselle.bookmark.controller;
 
-import br.gov.serpro.demoiselle.bookmark.business.BookmarkBO;
+import br.gov.serpro.demoiselle.bookmark.business.BookmarkBC;
 import org.demoiselle.jsf.template.AbstractListPageBean;
 
 import javax.faces.view.ViewScoped;
@@ -19,7 +19,7 @@ import java.util.List;
 public class BookmarkListMB extends AbstractListPageBean implements Serializable {
 
 	@Inject
-	private BookmarkBO bookmarkBO;
+	private BookmarkBC bookmarkBO;
 
 	@Override
 	protected List handleResultList() {

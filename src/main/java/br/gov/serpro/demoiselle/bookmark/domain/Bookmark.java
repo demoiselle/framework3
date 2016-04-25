@@ -1,7 +1,6 @@
 package br.gov.serpro.demoiselle.bookmark.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
@@ -23,6 +22,8 @@ public class Bookmark implements Serializable, Comparable<Bookmark> {
 	private String link;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_bookmark")
+	@SequenceGenerator(name = "seq_bookmark", allocationSize = 1, sequenceName = "seq_bookmark")
 	public Long getId() {
 		return id;
 	}

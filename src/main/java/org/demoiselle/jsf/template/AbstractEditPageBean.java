@@ -36,6 +36,7 @@
  */
 package org.demoiselle.jsf.template;
 
+import org.demoiselle.annotation.Name;
 import org.demoiselle.exception.DemoiselleException;
 import org.demoiselle.jsf.util.Parameter;
 import org.demoiselle.util.Reflections;
@@ -46,7 +47,6 @@ import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * Template Managed Bean class that implements the methods defined by the interface EditPageBean.
@@ -70,7 +70,7 @@ public abstract class AbstractEditPageBean<T, I> extends AbstractPageBean implem
 	private Class<I> idClass;
 
 	@Inject
-	@Named("demoiselle-jsf-bundle")
+	@Name("demoiselle-jsf-bundle")
 	private ResourceBundle bundle;
 
 	protected void clear() {
