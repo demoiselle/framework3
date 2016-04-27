@@ -74,6 +74,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
+			<scope>provided</scope>
 			<version>${hibernate.version}</version>
 		</dependency>
 	</dependencies>

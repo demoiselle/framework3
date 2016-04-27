@@ -49,10 +49,15 @@ import javax.faces.convert.Converter;
 import javax.inject.Inject;
 
 /**
- * Template Managed Bean class that implements the methods defined by the interface EditPageBean.
+ * <p>
+ * Extends {@link AbstractPageBean} by providing methods to automatically handle common CRUD
+ * operations described in {@link EditPageBean} and then navigate to the next view on
+ * the navigation hierarchy.
+ * </p>
  *
- * @param <T> bean object type
- * @param <I> bean id type
+ * @param <T> Type of the bean handled by this implementation.
+ * @param <I> Type of the primary identification key of the bean, used by the persistence layer to
+ *           handle loading and persisting tasks.
  * @author SERPRO
  * @see EditPageBean
  */

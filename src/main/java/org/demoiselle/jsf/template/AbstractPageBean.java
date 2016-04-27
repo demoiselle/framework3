@@ -42,7 +42,41 @@ import org.demoiselle.jsf.annotation.PreviousView;
 import javax.faces.context.FacesContext;
 
 /**
- * Template Managed Bean class that implements the methods defined by the interface PageBean.
+ * <p>
+ * This implementation reads information about page navigation
+ * through the {@link NextView} and {@link PreviousView} annotations.
+ * </p>
+ *
+ * <p>
+ * Concrete implementations of this class can then be annotated with the above
+ * annotations to provide information about where the framework can navigate
+ * the user after a managed bean's action.
+ * </p>
+ *
+ * <p>
+ * ex:
+ *
+ * <pre>
+ *     \u0040PreviousView("previous_page_when_canceled")
+ *     \u0040NextView("next_page_when_success")
+ *     public class ConcreteManagedBean extends AbstractPageBean {
+ *         public String saveAction() {
+ *             // ... Call a business object's method
+ *
+ *             if (sucess) {
+ *  	           // Will return the next view described in the {@linkplain NextView @NextView} annotation.
+ *                 return getNextView();
+ *             }
+ *             else {
+ *                 // Output an error message
+ *
+ *                 // Will return the previous view described in the {@linkplain PreviousView @PreviousView} annotation.
+ *                 return getPreviousView();
+ *             }
+ *         }
+ *     }
+ * </pre>
+ * </p>
  *
  * @author SERPRO
  * @see PageBean

@@ -34,29 +34,19 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.jsf.template;
+package org.demoiselle.util;
 
-/**
- * <p>
- * Extends the {@link PageBean} interface to provide methods to handle CRUD operations on an entity bean.
- * </p>
- *
- * @param <T> Type of the entity bean.
- *            
- * @author SERPRO
- * 
- */
-public interface EditPageBean<T> extends PageBean {
+import javax.enterprise.inject.spi.CDI;
 
-	String delete();
+public final class Metadata {
 
-	T getBean();
+	private Metadata() {
+	}
 
-	Object getId();
-
-	String insert();
-
-	boolean isUpdateMode();
-
-	String update();
+	public static String getVersion() {
+		ResourceBundle bundle = CDI.current()
+				.select(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle"))
+				.get();
+		return bundle.getString("version");
+	}
 }

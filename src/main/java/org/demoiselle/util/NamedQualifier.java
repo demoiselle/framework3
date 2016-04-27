@@ -34,29 +34,33 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.jsf.template;
+package org.demoiselle.util;
+
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Named;
+import java.lang.annotation.Annotation;
 
 /**
- * <p>
- * Extends the {@link PageBean} interface to provide methods to handle CRUD operations on an entity bean.
- * </p>
- *
- * @param <T> Type of the entity bean.
- *            
- * @author SERPRO
+ * Annotation litteral that allows to create instances of the {@link Named} qualifier.
+ * Those instances can then be used to call {@link Beans#getReference(Class type, Annotation... qualifiers)}.
+ *  
+ * @see Beans
+ * @see Named
  * 
+ * @author SERPRO
  */
-public interface EditPageBean<T> extends PageBean {
+@SuppressWarnings("all")
+public class NamedQualifier extends AnnotationLiteral<Named> implements Named {
 
-	String delete();
+	private static final long serialVersionUID = 6790759427086052113L;
 
-	T getBean();
+	private String namedValue;
 
-	Object getId();
+	public NamedQualifier(String value) {
+		namedValue = value;
+	}
 
-	String insert();
-
-	boolean isUpdateMode();
-
-	String update();
+	public String value() {
+		return namedValue;
+	}
 }

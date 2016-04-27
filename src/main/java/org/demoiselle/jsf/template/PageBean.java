@@ -39,7 +39,14 @@ package org.demoiselle.jsf.template;
 import java.io.Serializable;
 
 /**
- * Interface that defines a contract of facilities that all pages could implement. 
+ * <p>
+ * This interface represents page controllers that can
+ * navigate from one to the other. Implementations must
+ * provide information about what's the previous and next
+ * page on the navigation tree and the framework
+ * will run this navigation after a managed bean action
+ * finishes.
+ * </p>
  * 
  * @author SERPRO
  * 

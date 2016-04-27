@@ -34,29 +34,59 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.jsf.template;
+package org.demoiselle.annotation;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * <p>
- * Extends the {@link PageBean} interface to provide methods to handle CRUD operations on an entity bean.
- * </p>
- *
- * @param <T> Type of the entity bean.
- *            
- * @author SERPRO
+ * Used to prioritize some execution flow, as methods annotated with @startup or @shutdown
  * 
+ * @author SERPRO
  */
-public interface EditPageBean<T> extends PageBean {
+@Target({ TYPE, METHOD })
+@Retention(RUNTIME)
+public @interface Priority {
 
-	String delete();
+	/**
+	 * Most important priority value.
+	 */
+	static int MAX_PRIORITY = Integer.MIN_VALUE;
 
-	T getBean();
+	/**
+	 * Less important priority value.
+	 */
+	static int MIN_PRIORITY = Integer.MAX_VALUE;
+	
+	/**
+	 * Less important priority value.
+	 */
+	static int L1_PRIORITY = MIN_PRIORITY;
 
-	Object getId();
+	/**
+	 * Higher priority than L1_PRIORITY
+	 */
+	static int L2_PRIORITY = L1_PRIORITY - 100;
 
-	String insert();
+	/**
+	 * Higher priority than L2_PRIORITY
+	 */
+	static int L3_PRIORITY = L2_PRIORITY - 100;
 
-	boolean isUpdateMode();
+	/**
+	 * Higher priority than L3_PRIORITY
+	 */
+	static int L4_PRIORITY = L3_PRIORITY - 100;
 
-	String update();
+	/**
+	 * <p>
+	 * An integer value defines the priority order.
+	 * <p>
+	 * The lower the value, the greater priority.
+	 */
+	int value();
 }

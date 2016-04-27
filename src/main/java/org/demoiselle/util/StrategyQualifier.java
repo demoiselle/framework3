@@ -34,63 +34,22 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.internal;
+package org.demoiselle.util;
 
-import org.demoiselle.annotation.Name;
-import org.demoiselle.util.ResourceBundle;
+import org.demoiselle.annotation.Strategy;
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.inject.spi.InjectionPoint;
-import java.io.Serializable;
+import javax.enterprise.util.AnnotationLiteral;
 import java.lang.annotation.Annotation;
-import java.util.Locale;
 
 /**
- * This factory creates ResourceBundles with the application scopes.
+ * Annotation litteral that allows to create instances of the {@link Strategy} qualifier. The created instance can then be
+ * used to call {@link Beans#getReference(Class type, Annotation... qualifiers)}.
  * 
+ * @see Beans
+ * @see AmbiguousQualifier
  * @author SERPRO
  */
-public class ResourceBundleProducer implements Serializable {
+@SuppressWarnings("all")
+public class StrategyQualifier extends AnnotationLiteral<Strategy> implements Strategy {
 
-	private static final long serialVersionUID = 1L;
-
-	@Default
-	@Produces
-	public ResourceBundle createDefault(InjectionPoint ip) {
-		return create(null);
-	}
-
-	/**
-	 * Produces a ResourceBundle instance loading the properties file whose name
-	 * is defined by the {@link Name} qualifier. If no value is specified
-	 * then the default "messages.properties" file is loaded.
-	 */
-	@Name
-	@Produces
-	public ResourceBundle create(InjectionPoint ip) {
-		String baseName = null;
-		if (ip != null) {
-			if (ip.getQualifiers() != null) {
-				for (Annotation qualifier : ip.getQualifiers()) {
-					if (Name.class.isInstance(qualifier)) {
-						baseName = ((Name)qualifier).value();
-
-						// Trata situações onde não foi especificado um valor
-						// para o atributo "value"
-						if ("".equals(baseName)) {
-							baseName = null;
-						}
-
-						break;
-					}
-				}
-			}
-		}
-
-		return baseName != null ?
-				new ResourceBundle(baseName, CDI.current().select(Locale.class).get())
-				: new ResourceBundle("messages", CDI.current().select(Locale.class).get());
-	}
 }

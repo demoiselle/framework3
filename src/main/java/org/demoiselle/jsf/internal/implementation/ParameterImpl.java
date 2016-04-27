@@ -52,6 +52,7 @@ import javax.faces.convert.Converter;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -93,8 +94,7 @@ public class ParameterImpl<T extends Serializable> implements Parameter<T>, Seri
 
 			if (!"".equals(key)) {
 				this.key = key;
-			}
-			else {
+			} else {
 				this.key = ip.getMember().getName();
 			}
 		} else {
@@ -126,7 +126,7 @@ public class ParameterImpl<T extends Serializable> implements Parameter<T>, Seri
 
 	@SuppressWarnings("unchecked")
 	public T getValue() {
-		T result = null;
+		T result;
 		String parameterValue = getRequest().getParameter(key);
 
 		if (isSessionScoped()) {
@@ -165,7 +165,6 @@ public class ParameterImpl<T extends Serializable> implements Parameter<T>, Seri
 
 		} else if (isRequestScoped()) {
 			// FIXME Lançar exceção informando que não é possível setar parâmetros no request.
-
 		} else if (isViewScoped()) {
 			Map<String, Object> viewMap = getViewMap();
 			viewMap.put(key, value);
@@ -194,16 +193,18 @@ public class ParameterImpl<T extends Serializable> implements Parameter<T>, Seri
 
 		if (!Strings.isEmpty(value)) {
 			if (converter != null) {
-				result = converter.getAsObject(FacesContext.getCurrentInstance(), FacesContext.getCurrentInstance().getViewRoot(), value);
+				result = converter
+						.getAsObject(FacesContext.getCurrentInstance(), FacesContext.getCurrentInstance().getViewRoot(),
+								value);
 			} else {
-				result = new String(value);
+				result = value;
 			}
 		}
 
 		return result;
 	}
 
-	public static Map<String, Object> getViewMap() {
+	private static Map<String, Object> getViewMap() {
 		UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
 		return viewRoot.getViewMap(true);
 	}

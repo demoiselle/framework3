@@ -16,8 +16,7 @@ import javax.transaction.Transactional;
  */
 @ViewScoped
 @Named
-@NextView("bookmark_edit")
-@PreviousView("bookmark_list")
+@PreviousView("bookmark_list.xhtml")
 public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 
 	private static final long serialVersionUID = 1041624130855491357L;
@@ -47,7 +46,7 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 	@Transactional
 	public String insert() {
 		Bookmark bean = getBean();
-		String idParameter = "";
+		String idParameter = null;
 
 		if (bean != null) {
 			bean.setId(null);
@@ -59,7 +58,7 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 			}
 		}
 
-		return getNextView()+idParameter;
+		return idParameter;
 	}
 
 	@Override
@@ -75,7 +74,7 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 			bookmarkBC.merge(bean);
 		}
 
-		return getNextView();
+		return null;
 	}
 
 	@Override
