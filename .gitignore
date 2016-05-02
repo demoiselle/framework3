@@ -16,6 +16,7 @@ hs_err_pid*
 
 # Intellij IDEA specific files
 *.iml
+.directory
 /.idea
 
 # Eclipse specific files

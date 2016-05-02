@@ -1,0 +1,2 @@
+org.demoiselle.internal.bootstrap.CoreBootstrap
+org.demoiselle.internal.bootstrap.ConfigurationBootstrap

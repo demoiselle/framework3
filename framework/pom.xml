@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>demoiselle</artifactId>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>org.demoiselle</groupId>
+		<artifactId>demoiselle-parent</artifactId>
+		<version>${project.version}</version>
+		<relativePath>../parent</relativePath>
+	</parent>
+
+	<dependencies>
+		<!-- apache commons configuration -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-configuration2</artifactId>
+			<version>${commons.configuration.version}</version>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<!-- Dependencies versions -->
+		<commons.configuration.version>2.0</commons.configuration.version>
+
+		<!-- Maven plugin versions -->
+		<maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.plugin.version}</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

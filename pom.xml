@@ -4,124 +4,28 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>br.gov.serpro.demoiselle</groupId>
-	<artifactId>bookmark2</artifactId>
-	<version>1.0-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<groupId>org.demoiselle</groupId>
+	<artifactId>demoiselle-project</artifactId>
+	<version>${project.version}</version>
+	<packaging>pom</packaging>
 
-	<dependencies>
-		<!-- jsr-299 api -->
-		<dependency>
-			<groupId>javax.enterprise</groupId>
-			<artifactId>cdi-api</artifactId>
-			<scope>provided</scope>
-			<version>${cdi.version}</version>
-		</dependency>
-
-		<!-- jsr-349 api -->
-		<dependency>
-			<artifactId>validation-api</artifactId>
-			<groupId>javax.validation</groupId>
-			<scope>provided</scope>
-			<version>${validation.version}</version>
-		</dependency>
-
-		<!-- jsr-341 api and impl-->
-		<dependency>
-			<groupId>org.glassfish</groupId>
-			<artifactId>javax.el</artifactId>
-			<scope>provided</scope>
-			<version>${el.version}</version>
-		</dependency>
-
-		<!-- jsr-344 api -->
-		<dependency>
-			<groupId>com.sun.faces</groupId>
-			<artifactId>jsf-api</artifactId>
-			<scope>provided</scope>
-			<version>${jsf.version}</version>
-		</dependency>
-
-		<!-- jsr-342 api -->
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<scope>provided</scope>
-			<version>${javaee.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-web-api</artifactId>
-			<scope>provided</scope>
-			<version>${javaee.version}</version>
-		</dependency>
-
-		<!-- jsr-340 api -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope>
-			<version>${servlet.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<scope>provided</scope>
-			<version>${jstl.version}</version>
-		</dependency>
-
-		<!-- jsr-338 api -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<scope>provided</scope>
-			<version>${hibernate.version}</version>
-		</dependency>
-	</dependencies>
+	<modules>
+		<module>parent</module>
+		<module>framework</module>
+		<module>bookmark</module>
+	</modules>
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven.compiler.plugin.version}</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>${maven.war.plugin.version}</version>
+				<artifactId>maven-assembly-plugin</artifactId>
 			</plugin>
 		</plugins>
-
-		<finalName>bookmark2</finalName>
 	</build>
 
-
 	<properties>
-
-		<!-- Dependencies versions -->
-		<javaee.version>7.0</javaee.version>
-		<cdi.version>1.1</cdi.version>
-		<validation.version>1.1.0.Final</validation.version>
-		<transaction.version>1.2</transaction.version>
-		<jsf.version>2.2.13</jsf.version>
-		<jstl.version>1.2</jstl.version>
-		<el.version>3.0.0</el.version>
-		<servlet.version>3.1.0</servlet.version>
-		<persistence.version>2.1.0</persistence.version>
-		<rest.version>2.0</rest.version>
-		<concurrent.version>1.0</concurrent.version>
-		<hibernate.version>5.1.0.Final</hibernate.version>
-		<hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
-
-		<!-- Maven plugin versions -->
-		<maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
-		<maven.war.plugin.version>2.6</maven.war.plugin.version>
+		<project.version>3.0.0-SNAPSHOT</project.version>
 	</properties>
 
 </project>
