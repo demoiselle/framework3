@@ -34,45 +34,33 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.internal.producer;
+package org.demoiselle.message;
 
-import org.demoiselle.annotation.Name;
-import org.demoiselle.internal.proxy.LoggerProxy;
-import org.demoiselle.util.CDIUtils;
+/**
+ * Defines severity types to be used.
+ * 
+ * @author SERPRO
+ */
+public enum SeverityType {
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import java.io.Serializable;
-import java.util.logging.Logger;
+	/**
+	 * Information (less critical)
+	 */
+	INFO,
 
-public class LoggerProducer implements Serializable {
+	/**
+	 * Warning
+	 */
+	WARN,
 
-	private static final long serialVersionUID = 1L;
+	/**
+	 * Error
+	 */
+	ERROR,
 
-	@Default
-	@Produces
-	public Logger create(final InjectionPoint ip) {
-		String name;
+	/**
+	 * Fatal (most critical)
+	 */
+	FATAL
 
-		if (ip != null && ip.getMember() != null) {
-			name = ip.getMember().getDeclaringClass().getName();
-		} else {
-			name = "not.categorized";
-		}
-
-		return create(name);
-	}
-
-	@Name
-	@Produces
-	public Logger createNamed(final InjectionPoint ip) throws ClassNotFoundException {
-		Name nameAnnotation = CDIUtils.getQualifier(Name.class, ip);
-		String name = nameAnnotation.value();
-		return create(name);
-	}
-
-	public static Logger create(String name) {
-		return new LoggerProxy(name);
-	}
 }

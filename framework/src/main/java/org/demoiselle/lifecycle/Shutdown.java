@@ -34,45 +34,41 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.internal.producer;
+package org.demoiselle.lifecycle;
 
-import org.demoiselle.annotation.Name;
-import org.demoiselle.internal.proxy.LoggerProxy;
-import org.demoiselle.util.CDIUtils;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import java.io.Serializable;
-import java.util.logging.Logger;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-public class LoggerProducer implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
-	@Default
-	@Produces
-	public Logger create(final InjectionPoint ip) {
-		String name;
-
-		if (ip != null && ip.getMember() != null) {
-			name = ip.getMember().getDeclaringClass().getName();
-		} else {
-			name = "not.categorized";
-		}
-
-		return create(name);
-	}
-
-	@Name
-	@Produces
-	public Logger createNamed(final InjectionPoint ip) throws ClassNotFoundException {
-		Name nameAnnotation = CDIUtils.getQualifier(Name.class, ip);
-		String name = nameAnnotation.value();
-		return create(name);
-	}
-
-	public static Logger create(String name) {
-		return new LoggerProxy(name);
-	}
+/**
+ * Identifies a method eligible to be executed automatically during <b>application finalization</b>.
+ * <p>
+ * Take a look at the following usage sample:
+ * <p>
+ * <blockquote>
+ * 
+ * <pre>
+ * public class Finalizer {
+ * 
+ * 	&#064;Shutdown
+ *   &#064;Priority(5)
+ *   public void finalize() {
+ *       ...
+ *    }
+ * }
+ * 
+ * 
+ * </pre>
+ * 
+ * </blockquote>
+ * <p>
+ * 
+ * @author SERPRO
+ */
+@Target(METHOD)
+@Retention(RUNTIME)
+@LifecycleAnnotation
+public @interface Shutdown {
 }

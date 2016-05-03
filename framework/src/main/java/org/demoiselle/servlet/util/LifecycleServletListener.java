@@ -34,45 +34,39 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.internal.producer;
+package org.demoiselle.servlet.util;
 
-import org.demoiselle.annotation.Name;
-import org.demoiselle.internal.proxy.LoggerProxy;
-import org.demoiselle.util.CDIUtils;
+import org.demoiselle.lifecycle.AfterShutdownProccess;
+import org.demoiselle.lifecycle.AfterStartupProccess;
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import java.io.Serializable;
-import java.util.logging.Logger;
+import javax.enterprise.inject.spi.CDI;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
-public class LoggerProducer implements Serializable {
+/**
+ * <p>Maps the Servlet container lifecycle to the framework lifecycle.</p>
+ *
+ * <p>This listener will fire the framework specific CDI events {@link org.demoiselle.lifecycle.AfterStartupProccess}
+ * and {@link org.demoiselle.lifecycle.AfterShutdownProccess} - the first just after the servlet context has initialized
+ * and the second after the servlet context has been destroyed. These events will in turn run any methods
+ * annotated with {@link org.demoiselle.lifecycle.Startup} and {@link org.demoiselle.lifecycle.Shutdown}
+ * when the related events are fired.</p>
+ *
+ * @author SERPRO
+ */
+@WebListener
+public class LifecycleServletListener implements ServletContextListener {
 
-	private static final long serialVersionUID = 1L;
-
-	@Default
-	@Produces
-	public Logger create(final InjectionPoint ip) {
-		String name;
-
-		if (ip != null && ip.getMember() != null) {
-			name = ip.getMember().getDeclaringClass().getName();
-		} else {
-			name = "not.categorized";
-		}
-
-		return create(name);
+	@Override
+	public void contextInitialized(ServletContextEvent event) {
+		CDI.current().getBeanManager().fireEvent(new AfterStartupProccess() {
+		});
 	}
 
-	@Name
-	@Produces
-	public Logger createNamed(final InjectionPoint ip) throws ClassNotFoundException {
-		Name nameAnnotation = CDIUtils.getQualifier(Name.class, ip);
-		String name = nameAnnotation.value();
-		return create(name);
-	}
-
-	public static Logger create(String name) {
-		return new LoggerProxy(name);
+	@Override
+	public void contextDestroyed(ServletContextEvent event) {
+		CDI.current().getBeanManager().fireEvent(new AfterShutdownProccess() {
+		});
 	}
 }

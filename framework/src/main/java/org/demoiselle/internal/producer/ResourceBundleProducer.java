@@ -37,6 +37,7 @@
 package org.demoiselle.internal.producer;
 
 import org.demoiselle.annotation.Name;
+import org.demoiselle.util.CDIUtils;
 import org.demoiselle.util.ResourceBundle;
 
 import javax.enterprise.inject.Default;
@@ -49,7 +50,7 @@ import java.util.Locale;
 
 /**
  * This factory creates ResourceBundles with the application scopes.
- * 
+ *
  * @author SERPRO
  */
 public class ResourceBundleProducer implements Serializable {
@@ -59,7 +60,7 @@ public class ResourceBundleProducer implements Serializable {
 	@Default
 	@Produces
 	public ResourceBundle createDefault() {
-		return create((String)null);
+		return create((String) null);
 	}
 
 	/**
@@ -71,20 +72,15 @@ public class ResourceBundleProducer implements Serializable {
 	@Produces
 	public ResourceBundle create(InjectionPoint ip) {
 		String baseName = null;
-		if (ip != null) {
-			if (ip.getQualifiers() != null) {
-				for (Annotation qualifier : ip.getQualifiers()) {
-					if (Name.class.isInstance(qualifier)) {
-						baseName = ((Name)qualifier).value();
+		if (ip != null && ip.getQualifiers() != null) {
+			Name nameQualifier = CDIUtils.getQualifier(Name.class, ip);
+			if (nameQualifier != null) {
+				baseName = nameQualifier.value();
 
-						// Trata situações onde não foi especificado um valor
-						// para o atributo "value"
-						if ("".equals(baseName)) {
-							baseName = null;
-						}
-
-						break;
-					}
+				// Trata situações onde não foi especificado um valor
+				// para o atributo "value"
+				if ("".equals(baseName)) {
+					baseName = null;
 				}
 			}
 		}
@@ -97,13 +93,12 @@ public class ResourceBundleProducer implements Serializable {
 
 		try {
 			bundle = baseName != null ?
-					new ResourceBundle(baseName, CDI.current().select(Locale.class).get())
-					: new ResourceBundle("messages", CDI.current().select(Locale.class).get());
-		}
-		catch (RuntimeException e) {
+					new ResourceBundle(baseName, CDI.current().select(Locale.class).get()) :
+					new ResourceBundle("messages", CDI.current().select(Locale.class).get());
+		} catch (RuntimeException e) {
 			bundle = baseName != null ?
-					new ResourceBundle(baseName, Locale.getDefault())
-					: new ResourceBundle("messages", Locale.getDefault());
+					new ResourceBundle(baseName, Locale.getDefault()) :
+					new ResourceBundle("messages", Locale.getDefault());
 		}
 
 		return bundle;

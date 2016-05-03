@@ -34,45 +34,41 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.internal.producer;
+package org.demoiselle.annotation;
 
-import org.demoiselle.annotation.Name;
-import org.demoiselle.internal.proxy.LoggerProxy;
-import org.demoiselle.util.CDIUtils;
+import org.demoiselle.message.SeverityType;
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import java.io.Serializable;
-import java.util.logging.Logger;
+import javax.enterprise.inject.Stereotype;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-public class LoggerProducer implements Serializable {
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-	private static final long serialVersionUID = 1L;
+/**
+ * Annotation to be used in application exceptions. Exceptions marked with this annotation can receive special treatment
+ * like transaction management and special messages based on severity type attribute.
+ * 
+ * @author CETEC
+ */
+@Stereotype
+@Inherited
+@Target(TYPE)
+@Retention(RUNTIME)
+public @interface ApplicationException {
 
-	@Default
-	@Produces
-	public Logger create(final InjectionPoint ip) {
-		String name;
+	/**
+	 * When raised, the exception that uses this annotation must cause a rollback in the current transaction?
+	 * 
+	 * @return True if current transaction must be rolledback
+	 */
+	boolean rollback() default true;
 
-		if (ip != null && ip.getMember() != null) {
-			name = ip.getMember().getDeclaringClass().getName();
-		} else {
-			name = "not.categorized";
-		}
-
-		return create(name);
-	}
-
-	@Name
-	@Produces
-	public Logger createNamed(final InjectionPoint ip) throws ClassNotFoundException {
-		Name nameAnnotation = CDIUtils.getQualifier(Name.class, ip);
-		String name = nameAnnotation.value();
-		return create(name);
-	}
-
-	public static Logger create(String name) {
-		return new LoggerProxy(name);
-	}
+	/**
+	 * Exception Severity.
+	 * 
+	 * @return
+	 */
+	SeverityType severity() default SeverityType.INFO;
 }

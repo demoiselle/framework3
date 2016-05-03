@@ -34,63 +34,33 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.jsf.internal.implementation;
+package org.demoiselle.internal.bootstrap;
 
-import org.demoiselle.internal.configuration.PaginationConfig;
-import org.demoiselle.internal.implementation.PaginationImpl;
-import org.demoiselle.pagination.Pagination;
-import org.demoiselle.pagination.PaginationContext;
+import org.demoiselle.annotation.literal.NameQualifier;
+import org.demoiselle.lifecycle.AfterShutdownProccess;
+import org.demoiselle.lifecycle.Shutdown;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.CDI;
-import java.io.Serializable;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 /**
- * <p>
- * Context implementation reserved for pagination purposes. Internally a hash map is used to store pagination data for
- * each class type.
- * </p>
- * 
- * @author SERPRO
- * @see PaginationContext
+ * This class run at application shutdown
  */
-@RequestScoped
-public class RequestScopedPaginationContextImpl implements Serializable, PaginationContext {
+public class ShutdownBootstrap extends AbstractLifecycleBootstrap<Shutdown> {
 
-	private static final long serialVersionUID = 1L;
+	private Logger logger;
 
-	private static final String CLASS_CACHE_PREFIX = "DEMOISELLE#_PAGINATION#_CLASS#_CACHE#";
-
-	private PaginationConfig config;
-
-	private final Map<String, Pagination> cache = new ConcurrentHashMap<>();
-
-	public RequestScopedPaginationContextImpl() {}
-
-	public Pagination getPagination(final Class<?> clazz) {
-		return this.getPagination(clazz, false);
-	}
-
-	public Pagination getPagination(final Class<?> clazz, final boolean create) {
-		Pagination pagination = cache.get(CLASS_CACHE_PREFIX + clazz.getCanonicalName());
-
-		if (pagination == null && create) {
-			pagination = new PaginationImpl();
-			pagination.setPageSize(getConfig().getPageSize());
-
-			cache.put(CLASS_CACHE_PREFIX + clazz.getCanonicalName(), pagination);
+	@Override
+	protected Logger getLogger() {
+		if (logger == null) {
+			logger = CDI.current().select(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.lifecycle")).get();
 		}
 
-		return pagination;
+		return logger;
 	}
 
-	private PaginationConfig getConfig() {
-		if (config == null) {
-			config = CDI.current().select(PaginationConfig.class).get();
-		}
-
-		return config;
+	public void shutdown(@Observes AfterShutdownProccess event) {
+		proccessEvent();
 	}
 }

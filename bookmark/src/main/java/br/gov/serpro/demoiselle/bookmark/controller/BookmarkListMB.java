@@ -28,6 +28,6 @@ public class BookmarkListMB extends AbstractListPageBean implements Serializable
 
 	@Override
 	protected List handleResultList() {
-		return bookmarkBO.loadList(getPagination());
+		return bookmarkBO.listAll();
 	}
 }

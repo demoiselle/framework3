@@ -34,45 +34,33 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.internal.producer;
+package org.demoiselle.internal.bootstrap;
 
-import org.demoiselle.annotation.Name;
-import org.demoiselle.internal.proxy.LoggerProxy;
-import org.demoiselle.util.CDIUtils;
+import org.demoiselle.annotation.literal.NameQualifier;
+import org.demoiselle.lifecycle.AfterStartupProccess;
+import org.demoiselle.lifecycle.Startup;
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
-import java.io.Serializable;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.CDI;
 import java.util.logging.Logger;
 
-public class LoggerProducer implements Serializable {
+/**
+ * This class is the bootstrap to execute the processes at load time.
+ */
+public class StartupBootstrap extends AbstractLifecycleBootstrap<Startup> {
 
-	private static final long serialVersionUID = 1L;
+	private Logger logger;
 
-	@Default
-	@Produces
-	public Logger create(final InjectionPoint ip) {
-		String name;
-
-		if (ip != null && ip.getMember() != null) {
-			name = ip.getMember().getDeclaringClass().getName();
-		} else {
-			name = "not.categorized";
+	@Override
+	protected Logger getLogger() {
+		if (logger == null) {
+			logger = CDI.current().select(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.lifecycle")).get();
 		}
 
-		return create(name);
+		return logger;
 	}
 
-	@Name
-	@Produces
-	public Logger createNamed(final InjectionPoint ip) throws ClassNotFoundException {
-		Name nameAnnotation = CDIUtils.getQualifier(Name.class, ip);
-		String name = nameAnnotation.value();
-		return create(name);
-	}
-
-	public static Logger create(String name) {
-		return new LoggerProxy(name);
+	public void startup(@Observes AfterStartupProccess event) {
+		proccessEvent();
 	}
 }

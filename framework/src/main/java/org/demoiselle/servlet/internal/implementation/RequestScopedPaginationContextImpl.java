@@ -34,45 +34,61 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.internal.producer;
+package org.demoiselle.servlet.internal.implementation;
 
-import org.demoiselle.annotation.Name;
-import org.demoiselle.internal.proxy.LoggerProxy;
-import org.demoiselle.util.CDIUtils;
+import org.demoiselle.internal.configuration.PaginationConfig;
+import org.demoiselle.internal.implementation.PaginationImpl;
+import org.demoiselle.pagination.Pagination;
+import org.demoiselle.pagination.PaginationContext;
 
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.CDI;
 import java.io.Serializable;
-import java.util.logging.Logger;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class LoggerProducer implements Serializable {
+/**
+ * <p>
+ * Context implementation reserved for pagination purposes. Internally a hash map is used to store pagination data for
+ * each class type.
+ * </p>
+ * 
+ * @author SERPRO
+ * @see PaginationContext
+ */
+@RequestScoped
+public class RequestScopedPaginationContextImpl implements Serializable, PaginationContext {
 
 	private static final long serialVersionUID = 1L;
 
-	@Default
-	@Produces
-	public Logger create(final InjectionPoint ip) {
-		String name;
+	private PaginationConfig config;
 
-		if (ip != null && ip.getMember() != null) {
-			name = ip.getMember().getDeclaringClass().getName();
-		} else {
-			name = "not.categorized";
+	private final Map<Class<?>, Pagination> cache = new ConcurrentHashMap<>();
+
+	public RequestScopedPaginationContextImpl() {}
+
+	public Pagination getPagination(final Class<?> clazz) {
+		return this.getPagination(clazz, false);
+	}
+
+	public Pagination getPagination(final Class<?> clazz, final boolean create) {
+		Pagination pagination = cache.get(clazz);
+
+		if (pagination == null && create) {
+			pagination = new PaginationImpl();
+			pagination.setPageSize(getConfig().getPageSize());
+
+			cache.put(clazz, pagination);
 		}
 
-		return create(name);
+		return pagination;
 	}
 
-	@Name
-	@Produces
-	public Logger createNamed(final InjectionPoint ip) throws ClassNotFoundException {
-		Name nameAnnotation = CDIUtils.getQualifier(Name.class, ip);
-		String name = nameAnnotation.value();
-		return create(name);
-	}
+	private PaginationConfig getConfig() {
+		if (config == null) {
+			config = CDI.current().select(PaginationConfig.class).get();
+		}
 
-	public static Logger create(String name) {
-		return new LoggerProxy(name);
+		return config;
 	}
 }
