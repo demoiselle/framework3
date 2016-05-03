@@ -2,6 +2,9 @@
 *.class
 /bin
 /target
+/bookmark/target
+/framework/target
+
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
