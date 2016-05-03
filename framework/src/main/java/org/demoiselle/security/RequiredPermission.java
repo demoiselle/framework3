@@ -34,8 +34,11 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.annotation;
+package org.demoiselle.security;
 
+import javax.enterprise.util.Nonbinding;
+import javax.interceptor.InterceptorBinding;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -44,52 +47,19 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * <p>
- * Used to prioritize some execution flow, as methods annotated with @startup or @shutdown,
- * or some interface implementation.
- * </p>
- *
+ * Indicates that a specific permission is required in order to invocate the annotated method or class.
+ * 
  * @author SERPRO
  */
-@Target({ TYPE, METHOD })
+@Inherited
+@InterceptorBinding
+@Target({ METHOD, TYPE })
 @Retention(RUNTIME)
-public @interface Priority {
+public @interface RequiredPermission {
 
-	/**
-	 * Most important priority value.
-	 */
-	static int MAX_PRIORITY = Integer.MIN_VALUE;
+	@Nonbinding
+	String resource() default "";
 
-	/**
-	 * Less important priority value.
-	 */
-	static int MIN_PRIORITY = Integer.MAX_VALUE;
-	
-	/**
-	 * Less important priority value.
-	 */
-	static int L1_PRIORITY = MIN_PRIORITY;
-
-	/**
-	 * Higher priority than L1_PRIORITY
-	 */
-	static int L2_PRIORITY = L1_PRIORITY - 100;
-
-	/**
-	 * Higher priority than L2_PRIORITY
-	 */
-	static int L3_PRIORITY = L2_PRIORITY - 100;
-
-	/**
-	 * Higher priority than L3_PRIORITY
-	 */
-	static int L4_PRIORITY = L3_PRIORITY - 100;
-
-	/**
-	 * <p>
-	 * An integer value defines the priority order.
-	 * <p>
-	 * The lower the value, the greater priority.
-	 */
-	int value();
+	@Nonbinding
+	String operation() default "";
 }

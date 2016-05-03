@@ -34,62 +34,54 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.annotation;
+package org.demoiselle.servlet.security;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  * <p>
- * Used to prioritize some execution flow, as methods annotated with @startup or @shutdown,
- * or some interface implementation.
+ * This classes keeps credential informations, username and password.
  * </p>
  *
  * @author SERPRO
+ * 
  */
-@Target({ TYPE, METHOD })
-@Retention(RUNTIME)
-public @interface Priority {
 
-	/**
-	 * Most important priority value.
-	 */
-	static int MAX_PRIORITY = Integer.MIN_VALUE;
+@Named
+@RequestScoped
+public class Credentials implements Serializable {
 
-	/**
-	 * Less important priority value.
-	 */
-	static int MIN_PRIORITY = Integer.MAX_VALUE;
-	
-	/**
-	 * Less important priority value.
-	 */
-	static int L1_PRIORITY = MIN_PRIORITY;
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Higher priority than L1_PRIORITY
-	 */
-	static int L2_PRIORITY = L1_PRIORITY - 100;
+	private String username;
 
-	/**
-	 * Higher priority than L2_PRIORITY
-	 */
-	static int L3_PRIORITY = L2_PRIORITY - 100;
-
-	/**
-	 * Higher priority than L3_PRIORITY
-	 */
-	static int L4_PRIORITY = L3_PRIORITY - 100;
+	private String password;
 
 	/**
 	 * <p>
-	 * An integer value defines the priority order.
-	 * <p>
-	 * The lower the value, the greater priority.
+	 * Cleans the stored information, setting username and password to null.
+	 * </p>
 	 */
-	int value();
+	public void clear() {
+		this.username = null;
+		this.password = null;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }

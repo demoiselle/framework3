@@ -34,62 +34,57 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.annotation;
+package org.demoiselle.servlet.security;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import org.demoiselle.annotation.Priority;
+import org.demoiselle.annotation.literal.NameQualifier;
+import org.demoiselle.exception.DemoiselleException;
+import org.demoiselle.security.Authorizer;
+import org.demoiselle.security.RequiredPermission;
+import org.demoiselle.util.ResourceBundle;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.enterprise.inject.spi.CDI;
+import javax.servlet.http.HttpServletRequest;
+
+import static org.demoiselle.annotation.Priority.L2_PRIORITY;
 
 /**
  * <p>
- * Used to prioritize some execution flow, as methods annotated with @startup or @shutdown,
- * or some interface implementation.
+ * Implements the {@link Authorizer} interface, offering a way to implement the authorizer's functionalities.
  * </p>
  *
  * @author SERPRO
  */
-@Target({ TYPE, METHOD })
-@Retention(RUNTIME)
-public @interface Priority {
 
-	/**
-	 * Most important priority value.
-	 */
-	static int MAX_PRIORITY = Integer.MIN_VALUE;
+@Priority(L2_PRIORITY)
+public class ServletAuthorizer implements Authorizer {
 
-	/**
-	 * Less important priority value.
-	 */
-	static int MIN_PRIORITY = Integer.MAX_VALUE;
-	
-	/**
-	 * Less important priority value.
-	 */
-	static int L1_PRIORITY = MIN_PRIORITY;
+	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Higher priority than L1_PRIORITY
-	 */
-	static int L2_PRIORITY = L1_PRIORITY - 100;
+	private transient ResourceBundle bundle;
 
-	/**
-	 * Higher priority than L2_PRIORITY
-	 */
-	static int L3_PRIORITY = L2_PRIORITY - 100;
+	@Override
+	public boolean hasRole(String role) throws Exception {
+		return getRequest().isUserInRole(role);
+	}
 
-	/**
-	 * Higher priority than L3_PRIORITY
-	 */
-	static int L4_PRIORITY = L3_PRIORITY - 100;
+	@Override
+	public boolean hasPermission(String resource, String operation) throws Exception {
+		throw new DemoiselleException(getBundle().getString("has-permission-not-supported",
+				RequiredPermission.class.getSimpleName()));
+	}
 
-	/**
-	 * <p>
-	 * An integer value defines the priority order.
-	 * <p>
-	 * The lower the value, the greater priority.
-	 */
-	int value();
+	private HttpServletRequest getRequest() {
+		return CDI.current().select(HttpServletRequest.class).get();
+//		return Beans.getReference(HttpServletRequest.class);
+	}
+
+	private ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = CDI.current().select(ResourceBundle.class, new NameQualifier("demoiselle-servlet-bundle")).get();
+//			bundle = Beans.getReference(ResourceBundle.class, new NameQualifier("demoiselle-servlet-bundle"));
+		}
+
+		return bundle;
+	}
 }
