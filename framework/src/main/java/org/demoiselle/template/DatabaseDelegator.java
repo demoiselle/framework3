@@ -126,11 +126,6 @@ public class DatabaseDelegator<T, I, C extends DatabaseAccess<T, I>> implements 
 	}
 
 	@Override
-	public List<T> loadList(Pagination paginationInfo) {
-		return getDelegate().loadList(paginationInfo);
-	}
-
-	@Override
 	public List<T> listAll() {
 		return getDelegate().listAll();
 	}

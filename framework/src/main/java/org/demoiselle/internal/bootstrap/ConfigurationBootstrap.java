@@ -47,6 +47,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.WithAnnotations;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -59,15 +60,13 @@ public class ConfigurationBootstrap extends AbstractStrategyBootstrap<Configurat
 	private static final Map<ClassLoader, Map<String, Class<Object>>> cacheClassLoader = Collections
 			.synchronizedMap(new HashMap<>());
 
-	public void processAnnotatedType(@Observes final ProcessAnnotatedType<Object> event, BeanManager beanManager)
+	public void processAnnotatedType(@Observes @WithAnnotations(Configuration.class) final ProcessAnnotatedType<Object> event, BeanManager beanManager)
 			throws Exception {
 		final AnnotatedType<Object> annotatedType = event.getAnnotatedType();
 
-		if (annotatedType.getJavaClass().isAnnotationPresent(Configuration.class)) {
-			Class<Object> proxyClass = createProxy(annotatedType.getJavaClass());
-			AnnotatedType<Object> proxyAnnotatedType = beanManager.createAnnotatedType(proxyClass);
-			event.setAnnotatedType(proxyAnnotatedType);
-		}
+		Class<Object> proxyClass = createProxy(annotatedType.getJavaClass());
+		AnnotatedType<Object> proxyAnnotatedType = beanManager.createAnnotatedType(proxyClass);
+		event.setAnnotatedType(proxyAnnotatedType);
 	}
 
 	private static List<CtMethod> getMethods(CtClass type) throws NotFoundException {

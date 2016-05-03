@@ -200,7 +200,10 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 	public List<T> listAll() {
 		CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
 
-		TypedQuery<T> query = getEntityManager().createQuery( builder.createQuery(getBeanClass()) );
+		CriteriaQuery<T> criteriaQuery = builder.createQuery(getBeanClass());
+		criteriaQuery.from(getBeanClass());
+
+		TypedQuery<T> query = getEntityManager().createQuery( criteriaQuery );
 
 		Pagination pagination = getPagination();
 		if (pagination != null) {
@@ -214,7 +217,7 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 	protected Pagination getPagination() {
 		if (pagination == null) {
 			try {
-				PaginationContext context = CDI.current().select(PaginationContext.class).get(); //Beans.getReference(PaginationContext.class);
+				PaginationContext context = CDI.current().select(PaginationContext.class).get();
 				pagination = context.getPagination(getBeanClass());
 			} catch (ContextNotActiveException cause) {
 				pagination = null;

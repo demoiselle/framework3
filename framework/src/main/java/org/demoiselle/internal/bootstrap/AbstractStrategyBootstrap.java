@@ -6,6 +6,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.WithAnnotations;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ public abstract class AbstractStrategyBootstrap<I> implements Extension {
 
 	protected abstract Logger getLogger();
 
+	@SuppressWarnings("WeakerAccess")
 	protected Class<? extends I> getStrategyClass() {
 		if (this.strategyClass == null) {
 			this.strategyClass = Reflections.getGenericTypeArgument(this.getClass(), 0);

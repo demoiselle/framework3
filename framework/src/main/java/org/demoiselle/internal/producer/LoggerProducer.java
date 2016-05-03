@@ -38,6 +38,7 @@ package org.demoiselle.internal.producer;
 
 import org.demoiselle.annotation.Name;
 import org.demoiselle.internal.proxy.LoggerProxy;
+import org.demoiselle.util.CDIUtils;
 
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
@@ -66,7 +67,8 @@ public class LoggerProducer implements Serializable {
 	@Name
 	@Produces
 	public Logger createNamed(final InjectionPoint ip) throws ClassNotFoundException {
-		String name = ip.getAnnotated().getAnnotation(Name.class).value();
+		Name nameAnnotation = CDIUtils.getQualifier(Name.class, ip);
+		String name = nameAnnotation.value();
 		return create(name);
 	}
 
