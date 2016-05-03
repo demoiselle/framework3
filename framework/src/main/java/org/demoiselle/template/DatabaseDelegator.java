@@ -36,6 +36,7 @@
  */
 package org.demoiselle.template;
 
+import org.demoiselle.pagination.Pagination;
 import org.demoiselle.util.Reflections;
 
 import javax.enterprise.inject.spi.CDI;
@@ -122,6 +123,11 @@ public class DatabaseDelegator<T, I, C extends DatabaseAccess<T, I>> implements 
 	@SuppressWarnings("unchecked")
 	public List<T> loadList(I... ids) {
 		return getDelegate().loadList(ids);
+	}
+
+	@Override
+	public List<T> loadList(Pagination paginationInfo) {
+		return getDelegate().loadList(paginationInfo);
 	}
 
 	@Override

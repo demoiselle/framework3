@@ -34,9 +34,10 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.internal.implementation;
+package org.demoiselle.jsf.internal.implementation;
 
 import org.demoiselle.internal.configuration.PaginationConfig;
+import org.demoiselle.internal.implementation.PaginationImpl;
 import org.demoiselle.pagination.Pagination;
 import org.demoiselle.pagination.PaginationContext;
 
@@ -56,30 +57,30 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see PaginationContext
  */
 @RequestScoped
-public class PaginationContextImpl implements Serializable, PaginationContext {
+public class RequestScopedPaginationContextImpl implements Serializable, PaginationContext {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final String CLASS_CACHE_PREFIX = "DEMOISELLE#_PAGINATION#_CLASS#_CACHE#";
+
 	private PaginationConfig config;
 
-	private final Map<Class<?>, Pagination> cache = new ConcurrentHashMap<>();
+	private final Map<String, Pagination> cache = new ConcurrentHashMap<>();
 
-	public PaginationContextImpl() {
-		System.out.println();
-	}
+	public RequestScopedPaginationContextImpl() {}
 
 	public Pagination getPagination(final Class<?> clazz) {
 		return this.getPagination(clazz, false);
 	}
 
 	public Pagination getPagination(final Class<?> clazz, final boolean create) {
-		Pagination pagination = cache.get(clazz);
+		Pagination pagination = cache.get(CLASS_CACHE_PREFIX + clazz.getCanonicalName());
 
 		if (pagination == null && create) {
 			pagination = new PaginationImpl();
 			pagination.setPageSize(getConfig().getPageSize());
 
-			cache.put(clazz, pagination);
+			cache.put(CLASS_CACHE_PREFIX + clazz.getCanonicalName(), pagination);
 		}
 
 		return pagination;

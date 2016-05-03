@@ -36,6 +36,8 @@
  */
 package org.demoiselle.template;
 
+import org.demoiselle.pagination.Pagination;
+
 import java.io.Serializable;
 import java.util.List;
 

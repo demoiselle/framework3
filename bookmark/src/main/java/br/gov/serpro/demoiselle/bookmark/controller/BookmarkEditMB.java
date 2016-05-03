@@ -16,7 +16,8 @@ import javax.transaction.Transactional;
  */
 @ViewScoped
 @Named
-@PreviousView("bookmark_list.xhtml")
+@PreviousView("bookmark_list.jsf")
+@NextView("bookmark_edit.jsf")
 public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 
 	private static final long serialVersionUID = 1041624130855491357L;
@@ -58,7 +59,8 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 			}
 		}
 
-		return idParameter;
+		//TODO Fazer esse retorno abrir novamente a tela de edição em modo update com esse registro.
+		return getNextView() + idParameter;
 	}
 
 	@Override

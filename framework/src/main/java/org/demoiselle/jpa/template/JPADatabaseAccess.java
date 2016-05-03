@@ -36,9 +36,13 @@
  */
 package org.demoiselle.jpa.template;
 
+import org.demoiselle.pagination.Pagination;
+import org.demoiselle.pagination.PaginationContext;
 import org.demoiselle.template.DatabaseAccess;
 import org.demoiselle.util.Reflections;
 
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.inject.spi.CDI;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -62,10 +66,11 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 
 	private Class<T> beanClass;
 
+	private transient Pagination pagination;
+
 	protected abstract EntityManager getEntityManager();
 
-	private final List<I> idListCache = new ArrayList<>();
-
+	@SuppressWarnings("WeakerAccess")
 	protected Class<T> getBeanClass() {
 		if (this.beanClass == null) {
 			this.beanClass = Reflections.getGenericTypeArgument(this.getClass(), 0);
@@ -153,6 +158,12 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 		SingularAttribute<T, I> idAttribute = typeRoot.getModel().getId(idClass);
 		TypedQuery<T> listQuery = getEntityManager().createQuery(criteria.where(typeRoot.get(idAttribute).in(ids)));
 
+		Pagination pagination = getPagination();
+		if (pagination != null) {
+			listQuery.setFirstResult(pagination.getFirstResult());
+			listQuery.setMaxResults(pagination.getPageSize());
+		}
+
 		return listQuery.getResultList();
 	}
 
@@ -176,6 +187,12 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 		SingularAttribute<T, I> idAttribute = typeRoot.getModel().getId(idClass);
 		TypedQuery<T> listQuery = getEntityManager().createQuery(criteria.where(typeRoot.get(idAttribute).in(ids)));
 
+		Pagination pagination = getPagination();
+		if (pagination != null) {
+			listQuery.setFirstResult(pagination.getFirstResult());
+			listQuery.setMaxResults(pagination.getPageSize());
+		}
+
 		return listQuery.getResultList();
 	}
 
@@ -184,6 +201,26 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 		CriteriaBuilder builder = getEntityManager().getCriteriaBuilder();
 
 		TypedQuery<T> query = getEntityManager().createQuery( builder.createQuery(getBeanClass()) );
+
+		Pagination pagination = getPagination();
+		if (pagination != null) {
+			query.setFirstResult(pagination.getFirstResult());
+			query.setMaxResults(pagination.getPageSize());
+		}
+
 		return query.getResultList();
+	}
+
+	protected Pagination getPagination() {
+		if (pagination == null) {
+			try {
+				PaginationContext context = CDI.current().select(PaginationContext.class).get(); //Beans.getReference(PaginationContext.class);
+				pagination = context.getPagination(getBeanClass());
+			} catch (ContextNotActiveException cause) {
+				pagination = null;
+			}
+		}
+
+		return pagination;
 	}
 }

@@ -71,7 +71,7 @@ public interface PaginationContext {
 	 * @param create
 	 *            Defines whether a pagination instance must always be returned, even if a new instance should
 	 *            be created
-	 * @return Pagination Pagination Pagination instance attached to the provided type. If one doesn't exist, check
+	 * @return Pagination Pagination instance attached to the provided type. If one doesn't exist, check
 	 *            it will be created if <code>create</code> is set to <code>true</code>
 	 */
 	Pagination getPagination(Class<?> clazz, boolean create);

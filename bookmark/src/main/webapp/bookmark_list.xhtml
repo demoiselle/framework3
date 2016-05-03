@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+<head jsf:id="document_head">
+    <title>Bookmark</title>
+</head>
+
+<body jsf:id="document_body">
+
+<form jsf:id="form_bookmark" jsf:prependId="false">
+    <table jsf:id="tab_bookmark">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descrição</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        <ui:repeat value="#{bookmarkListMB.dataModel}" var="bookmark">
+            <tr>
+                <td>#{bookmark.}</td>
+                <td>#{bookmark.description}</td>
+                <td>#{bookmark.link}</td>
+            </tr>
+        </ui:repeat>
+        </tbody>
+    </table>
+</form>
+
+</body>
+
+</html>
