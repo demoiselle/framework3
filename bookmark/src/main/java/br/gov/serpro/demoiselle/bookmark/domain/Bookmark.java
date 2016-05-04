@@ -21,6 +21,15 @@ public class Bookmark implements Serializable, Comparable<Bookmark> {
 
 	private String link;
 
+	public Bookmark() {
+		this(null, null);
+	}
+
+	public Bookmark(String description, String link) {
+		this.description = description;
+		this.link = link;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_bookmark")
 	@SequenceGenerator(name = "seq_bookmark", allocationSize = 1, sequenceName = "seq_bookmark")

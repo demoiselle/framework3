@@ -38,8 +38,7 @@ package org.demoiselle.jsf.template;
 
 import org.demoiselle.jsf.annotation.NextView;
 import org.demoiselle.jsf.annotation.PreviousView;
-
-import javax.faces.context.FacesContext;
+import org.demoiselle.jsf.util.Faces;
 
 /**
  * <p>
@@ -91,8 +90,7 @@ public abstract class AbstractPageBean implements PageBean {
 
 	@Override
 	public String getCurrentView() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		return facesContext.getViewRoot().getViewId();
+		return Faces.getCurrentViewId();
 	}
 
 	@Override

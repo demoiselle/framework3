@@ -2,23 +2,19 @@ package br.gov.serpro.demoiselle.bookmark.controller;
 
 import br.gov.serpro.demoiselle.bookmark.business.BookmarkBC;
 import br.gov.serpro.demoiselle.bookmark.domain.Bookmark;
-import org.demoiselle.jsf.annotation.NextView;
 import org.demoiselle.jsf.annotation.PreviousView;
+import org.demoiselle.jsf.stereotype.ViewController;
 import org.demoiselle.jsf.template.AbstractEditPageBean;
 import org.demoiselle.security.LoggedIn;
 
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.transaction.Transactional;
 
 /**
  * @author SERPRO
  */
-@ViewScoped
-@Named
-@PreviousView("bookmark_list.jsf")
-@NextView("bookmark_edit.jsf")
+@ViewController
+@PreviousView("/bookmark_list.xhtml")
 public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 
 	private static final long serialVersionUID = 1041624130855491357L;
@@ -49,7 +45,6 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 	@LoggedIn
 	public String insert() {
 		Bookmark bean = getBean();
-		String idParameter = null;
 
 		if (bean != null) {
 			bean.setId(null);
@@ -57,12 +52,10 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 
 			if (savedBookmark != null && savedBookmark.getId() != null) {
 				bean.setId(savedBookmark.getId());
-				idParameter = "?id="+savedBookmark.getId();
 			}
 		}
 
-		//TODO Fazer esse retorno abrir novamente a tela de edição em modo update com esse registro.
-		return getNextView() + idParameter;
+		return getNextView();
 	}
 
 	@Override
@@ -90,6 +83,6 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 			this.clear();
 		}
 
-		return getPreviousView();
+		return getNextView();
 	}
 }
