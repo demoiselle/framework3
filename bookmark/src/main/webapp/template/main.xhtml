@@ -2,55 +2,72 @@
 <!DOCTYPE html>
 <html xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <f:view contentType="text/html" locale="#{locales.currentLocale}"/>
 
-<h:head>
+<head jsf:id="document_head">
     <title>#{messages['main.app.title']}</title>
     <h:outputStylesheet library="default" name="css/styles.css"/>
-</h:head>
+</head>
 
-<h:body style="background-color:#f1f1f1">
-    <table style="width: 100%">
-        <tr>
-            <td height="70" align="left">
-                <h:outputLink value="index.jsf">
-                    <h:graphicImage library="default" name="images/logo.png" style="border: 0;"/>
-                </h:outputLink>
-                <div style="float: right;">
-                    <h:form id="language_form" prependId="true">
+<body jsf:id="document_body">
+
+<b:container layout="fluid">
+    <b:row>
+        <b:column span="12">
+            <ui:include src="/menu.xhtml"/>
+        </b:column>
+    </b:row>
+
+    <b:row>
+        <b:column span="2" offset="10">
+            <form jsf:id="language_form" jsf:prependId="false">
+                <b:row>
+                    <b:column span="6">
                         <h:commandLink action="#{locales.setCurrentLocale('pt')}">
                             <span class="ui-icon-locale-pt"/>
                         </h:commandLink>
+                    </b:column>
+
+                    <b:column span="6">
                         <h:commandLink action="#{locales.setCurrentLocale('en')}">
                             <span class="ui-icon-locale-en"/>
                         </h:commandLink>
-                    </h:form>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td height="20"><ui:include src="/menu.xhtml"/></td>
-        </tr>
-        <tr valign="top">
-            <td height="400"><ui:insert name="body"/></td>
-        </tr>
-        <tr align="center">
-            <td height="20" align="center" class="text-input">#{messages['main.footer.text']}</td>
-        </tr>
-    </table>
+                    </b:column>
+                </b:row>
+            </form>
+        </b:column>
+    </b:row>
 
-    <p:growl id="messages" globalOnly="true"/>
+    <b:row>
+        <b:column span="12">
+            <ui:insert name="body"/>
+        </b:column>
+    </b:row>
+</b:container>
 
-    <p:ajaxStatus style="width:16px;height:16px;">
-        <f:facet name="start">
-        </f:facet>
+<b:row>
+    <b:column span="12">
+        <p:growl id="messages" globalOnly="true"/>
+    </b:column>
+</b:row>
 
-        <f:facet name="complete">
-            <h:outputText value=""/>
-        </f:facet>
-    </p:ajaxStatus>
-</h:body>
+<b:row>
+    <b:column span="12">
+        <p:ajaxStatus style="width:16px;height:16px;">
+            <f:facet name="start">
+            </f:facet>
+
+            <f:facet name="complete">
+                <h:outputText value=""/>
+            </f:facet>
+        </p:ajaxStatus>
+    </b:column>
+</b:row>
+</body>
+
 </html>

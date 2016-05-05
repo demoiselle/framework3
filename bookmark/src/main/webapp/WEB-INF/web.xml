@@ -14,11 +14,35 @@
 		<url-pattern>*.jsf</url-pattern>
 	</servlet-mapping>
 
+	<!-- Activate Bootstrap theme for Primefaces -->
+	<context-param>
+		<param-name>primefaces.THEME</param-name>
+		<param-value>bootstrap</param-value>
+	</context-param>
+
 	<security-constraint>
 		<display-name>Restrict raw XHTML Documents</display-name>
 		<web-resource-collection>
 			<web-resource-name>XHTML</web-resource-name>
 			<url-pattern>*.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint/>
+	</security-constraint>
+
+	<security-constraint>
+		<display-name>Restrict access to the resources folder</display-name>
+		<web-resource-collection>
+			<web-resource-name>Resources</web-resource-name>
+			<url-pattern>/resources/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint/>
+	</security-constraint>
+
+	<security-constraint>
+		<display-name>Restrict access to the templates folder</display-name>
+		<web-resource-collection>
+			<web-resource-name>Templates</web-resource-name>
+			<url-pattern>/template/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint/>
 	</security-constraint>

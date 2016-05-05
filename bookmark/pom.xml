@@ -23,10 +23,23 @@
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
 
+		<!-- Prime Faces main dependency and theme -->
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
 			<version>5.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.primefaces.themes</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>1.0.10</version>
+		</dependency>
+
+		<!-- Boots Faces JSF library with Bootstrap specific widgets -->
+		<dependency>
+			<groupId>net.bootsfaces</groupId>
+			<artifactId>bootsfaces</artifactId>
+			<version>0.8.0</version>
 		</dependency>
 	</dependencies>
 
@@ -55,6 +68,15 @@
 		<finalName>bookmark2</finalName>
 	</build>
 
+	<repositories>
+		<!-- Prime Faces repository, home of the Bootstrap Primefaces theme -->
+		<repository>
+			<id>prime-repo</id>
+			<name>PrimeFaces Maven Repository</name>
+			<url>http://repository.primefaces.org</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
 
 	<properties>
 		<!-- Maven plugin versions -->

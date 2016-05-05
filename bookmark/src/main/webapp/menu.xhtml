@@ -1,17 +1,20 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-				xmlns:p="http://primefaces.org/ui"
-				xmlns:h="http://xmlns.jcp.org/jsf/html"
-				xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-	<h:form>
-		<p:menubar>
-			<p:submenu label="#{messages['menu.bookmark']}">
-				<p:menuitem value="#{messages['menu.menuitem.new']}" url="/bookmark_edit.jsf" />
-				<p:menuitem value="#{messages['menu.menuitem.list']}" url="/bookmark_list.jsf" />
-			</p:submenu>
+    <form jsf:id="form_main_menu">
+        <b:navBar brand="#{messages['bookmark.label']}" brandHref="#">
+            <b:navbarLinks>
+                <b:navLink value="#{messages['menu.menuitem.new']}" href="bookmark_edit.jsf"/>
+                <b:navLink value="#{messages['menu.menuitem.list']}" href="bookmark_list.jsf"/>
+            </b:navbarLinks>
 
-			<p:menuitem value="#{messages['menu.menuitem.quit']}" url="http://www.frameworkdemoiselle.gov.br/" action="#{securityContext.logout}" />
-		</p:menubar>
-	</h:form>
+            <b:dropMenu value="#{messages['label.user']}">
+                <b:navLink value="#{messages['menu.menuitem.login']}" href="#" rendered="#{!securityContext.loggedIn}" />
+                <b:navLink value="#{messages['menu.menuitem.quit']}" href="index.jsf" rendered="#{securityContext.loggedIn}"/>
+            </b:dropMenu>
+        </b:navBar>
+    </form>
 
 </ui:composition>

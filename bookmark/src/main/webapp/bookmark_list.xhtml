@@ -2,68 +2,84 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:b="http://bootsfaces.net/ui"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="/template/main.xhtml">
 
     <ui:define name="body">
-        <h:form>
-            <p:toolbar>
-                <p:toolbarGroup align="left">
-                    <p:commandButton title="#{messages['button.new']}" icon="ui-icon-document"
-                                     action="#{bookmarkListMB.getNextView}"
-                                     actionListener="#{bookmarkListMB.clear}"
-                                     ajax="false"/>
+        <form jsf:id="form_bookmark_list" jsf:prependId="false">
+            <b:row>
+                <b:column span="12">
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:commandButton title="#{messages['button.new']}" icon="ui-icon-document"
+                                             action="#{bookmarkListMB.getNextView}"
+                                             actionListener="#{bookmarkListMB.clear}"
+                                             ajax="false"/>
 
-                    <p:commandButton title="#{messages['button.delete']}"
-                                     icon="ui-icon-trash"
-                                     type="button"
-                                     action="#{bookmarkListMB.deleteSelection}"
-                                     ajax="false">
-                        <p:confirm message="#{messages['label.confirm.delete']}"
-                                   header="#{messages['label.dialog.alert']}!"/>
-                    </p:commandButton>
-                </p:toolbarGroup>
-            </p:toolbar>
+                            <p:commandButton title="#{messages['button.delete']}"
+                                             icon="ui-icon-trash"
+                                             type="button"
+                                             action="#{bookmarkListMB.deleteSelection}"
+                                             ajax="false">
+                                <p:confirm message="#{messages['label.confirm.delete']}"
+                                           header="#{messages['label.dialog.alert']}!"/>
+                            </p:commandButton>
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                </b:column>
+            </b:row>
 
-            <p:dataTable id="list" var="bean" value="#{bookmarkListMB.resultList}">
-                <f:facet name="header">#{messages['bookmark.list.table.title']}</f:facet>
-                <p:column style="width:5%;">
-                    <h:selectBooleanCheckbox value="#{bookmarkListMB.selection[bean.id]}"/>
-                </p:column>
-                <p:column style="width:5%;" sortBy="#{bean.id}">
-                    <f:facet name="header">#{messages['bookmark.label.id']}</f:facet>
-                    <h:outputText value="#{bean.id}"/>
-                </p:column>
-                <p:column sortBy="#{bean.description}">
-                    <f:facet name="header">#{messages['bookmark.label.description']}</f:facet>
-                    <h:commandLink action="#{bookmarkListMB.getNextView}" actionListener="#{bookmarkListMB.clear}">
-                        <h:outputText value="#{bean.description}"/>
-                        <f:param name="id" value="#{bean.id}"/>
-                    </h:commandLink>
-                </p:column>
-                <p:column sortBy="#{bean.link}">
-                    <f:facet name="header">#{messages['bookmark.label.link']}</f:facet>
-                    <h:commandLink action="#{bookmarkListMB.getNextView}" actionListener="#{bookmarkListMB.clear}">
-                        <h:outputText value="#{bean.link}"/>
-                        <f:param name="id" value="#{bean.id}"/>
-                    </h:commandLink>
-                </p:column>
-            </p:dataTable>
+            <b:row>
+                <b:column span="12">
+                    <p:dataTable id="list" var="bean" value="#{bookmarkListMB.resultList}">
+                        <f:facet name="header">#{messages['bookmark.list.table.title']}</f:facet>
+                        <p:column style="width:5%;">
+                            <h:selectBooleanCheckbox value="#{bookmarkListMB.selection[bean.id]}"/>
+                        </p:column>
+                        <p:column style="width:5%;" sortBy="#{bean.id}">
+                            <f:facet name="header">#{messages['bookmark.label.id']}</f:facet>
+                            <h:outputText value="#{bean.id}"/>
+                        </p:column>
+                        <p:column sortBy="#{bean.description}">
+                            <f:facet name="header">#{messages['bookmark.label.description']}</f:facet>
+                            <h:commandLink action="#{bookmarkListMB.getNextView}"
+                                           actionListener="#{bookmarkListMB.clear}">
+                                <h:outputText value="#{bean.description}"/>
+                                <f:param name="id" value="#{bean.id}"/>
+                            </h:commandLink>
+                        </p:column>
+                        <p:column sortBy="#{bean.link}">
+                            <f:facet name="header">#{messages['bookmark.label.link']}</f:facet>
+                            <h:commandLink action="#{bookmarkListMB.getNextView}"
+                                           actionListener="#{bookmarkListMB.clear}">
+                                <h:outputText value="#{bean.link}"/>
+                                <f:param name="id" value="#{bean.id}"/>
+                            </h:commandLink>
+                        </p:column>
+                    </p:dataTable>
+                </b:column>
+            </b:row>
 
-            <p:confirmDialog global="true"
-                             showEffect="bounce"
-                             hideEffect="explode"
-                             severity="alert">
-                <p:commandButton value="#{messages['button.dialog.yes']}"
-                                 type="button"
-                                 styleClass="ui-confirmdialog-yes"
-                                 icon="ui-icon-check"/>
-                <p:commandButton value="#{messages['button.dialog.no']}"
-                                 type="button"
-                                 styleClass="ui-confirmdialog-no"
-                                 icon="ui-icon-close"/>
-            </p:confirmDialog>
-        </h:form>
+            <b:row>
+                <b:column span="12">
+                    <p:confirmDialog global="true"
+                                     showEffect="bounce"
+                                     hideEffect="explode"
+                                     severity="alert">
+                        <p:commandButton value="#{messages['button.dialog.yes']}"
+                                         type="button"
+                                         styleClass="ui-confirmdialog-yes"
+                                         icon="ui-icon-check"/>
+                        <p:commandButton value="#{messages['button.dialog.no']}"
+                                         type="button"
+                                         styleClass="ui-confirmdialog-no"
+                                         icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </b:column>
+            </b:row>
+        </form>
     </ui:define>
 </ui:composition>
