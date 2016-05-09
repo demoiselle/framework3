@@ -5,4 +5,10 @@
         http://xmlns.jcp.org/xml/ns/javaee
         http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd" bean-discovery-mode="all">
 
+	<interceptors>
+		<class>org.demoiselle.security.LoggedInInterceptor</class>
+		<class>org.demoiselle.security.RequiredPermissionInterceptor</class>
+		<class>org.demoiselle.security.RequiredRoleInterceptor</class>
+	</interceptors>
+
 </beans>

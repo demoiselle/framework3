@@ -42,7 +42,7 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 
 	@Override
 	@Transactional
-	@LoggedIn
+//	@LoggedIn
 	public String insert() {
 		Bookmark bean = getBean();
 
