@@ -1,46 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-				xmlns:p="http://primefaces.org/ui"
-				xmlns:h="http://xmlns.jcp.org/jsf/html"
-				xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-				template="/template/main.xhtml">
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/template/main.xhtml">
 
-	<ui:define name="body">
-		<h:form prependId="false">
-			<p:toolbar>
-				<p:toolbarGroup align="left">
-					<p:commandButton value="#{messages['button.save']}" action="#{bookmarkEditMB.insert}"
-						rendered="#{!bookmarkEditMB.updateMode}" ajax="false" />
-					<p:commandButton value="#{messages['button.save']}" action="#{bookmarkEditMB.update}"
-						rendered="#{bookmarkEditMB.updateMode}" ajax="false" />
-					<p:commandButton value="#{messages['button.delete']}" onclick="confirmation.show()"
-						rendered="#{bookmarkEditMB.updateMode}" type="button" immediate="true" ajax="false" />
-					<p:confirmDialog message="#{messages['label.confirm.delete']}" showEffect="bounce" hideEffect="explode"
-						header="#{messages['label.dialog.delete']}" severity="alert" widgetVar="confirmation">
-						<h:commandButton value="#{messages['button.dialog.yes']}" action="#{bookmarkEditMB.delete}" immediate="true"
-							ajax="false" />
-						<h:commandButton value="#{messages['button.dialog.no']}" onclick="confirmation.hide()" type="button" />
-					</p:confirmDialog>
-				</p:toolbarGroup>
-			</p:toolbar>
+    <ui:define name="body">
+        <form jsf:id="form_bookmark_edit" jsf:prependId="false">
+            <b:panelGrid colSpans="12">
+                <b:panel>
+                    <b:commandButton value="#{messages['button.save']}" action="#{bookmarkEditMB.insert}"
+                                     rendered="#{!bookmarkEditMB.updateMode}" ajax="false" look="primary"
+                                     icon="floppy-save"/>
+                    <b:commandButton value="#{messages['button.save']}" action="#{bookmarkEditMB.update}"
+                                     rendered="#{bookmarkEditMB.updateMode}" ajax="false" look="primary"
+                                     icon="pencil"/>
+                    <p:commandButton value="#{messages['button.delete']}" action="#{bookmarkEditMB.delete}"
+                                     rendered="#{bookmarkEditMB.updateMode}" type="button" immediate="true"
+                                     ajax="false" styleClass="btn btn-danger">
+                        <p:confirm message="#{messages['label.confirm.delete']}"
+                                   header="#{messages['label.dialog.delete']}"/>
+                    </p:commandButton>
+                </b:panel>
+            </b:panelGrid>
 
-			<br />
+            <b:panel title="#{messages['bookmark.label']}">
+                <b:panelGrid colSpans="2,8,2" columns="">
+                    <p:outputLabel value="#{messages['bookmark.label.id']}: " for="id" styleClass="text-input"/>
+                    <h:outputText id="id" value="#{bookmarkEditMB.bean.id}"/>
+                    <p:message for="id"/>
 
-			<p:fieldset legend="#{messages['bookmark.label']}" toggleable="true" toggleSpeed="500">
-				<h:panelGrid id="fields" columns="3">
-					<h:outputLabel value="#{messages['bookmark.label.id']}: " for="id" styleClass="text-input" />
-					<h:outputText id="id" value="#{bookmarkEditMB.bean.id}" />
-					<p:message for="id" />
+                    <p:outputLabel value="#{messages['bookmark.label.description']}: " for="description"
+                                   styleClass="text-input"/>
+                    <p:inputText id="description" value="#{bookmarkEditMB.bean.description}" style="width: 100%;"
+                                 title="#{messages['bookmark.alt.description']}"
+                                 placeholder="#{messages['bookmark.alt.description']}"/>
+                    <p:message for="description"/>
 
-					<h:outputLabel value="#{messages['bookmark.label.description']}: " for="description" styleClass="text-input" />
-					<h:inputText id="description" value="#{bookmarkEditMB.bean.description}"
-						title="#{messages['bookmark.alt.description']}" />
-					<p:message for="description" />
+                    <p:outputLabel value="#{messages['bookmark.label.link']}: " for="link" styleClass="text-input"/>
+                    <p:inputText id="link" value="#{bookmarkEditMB.bean.link}" style="width: 100%;"
+                                 title="#{messages['bookmark.alt.link']}"
+                                 placeholder="#{messages['bookmark.alt.link']}"/>
+                    <p:message for="link"/>
+                </b:panelGrid>
+            </b:panel>
 
-					<h:outputLabel value="#{messages['bookmark.label.link']}: " for="link" styleClass="text-input" />
-					<h:inputText id="link" value="#{bookmarkEditMB.bean.link}" title="#{messages['bookmark.alt.link']}" />
-					<p:message for="link" />
-				</h:panelGrid>
-			</p:fieldset>
-		</h:form>
-	</ui:define>
+            <p:confirmDialog showEffect="bounce"
+                             hideEffect="explode"
+                             severity="alert"
+                             global="true">
+                <h:commandButton value="#{messages['button.dialog.yes']}"
+                                 type="button"
+                                 styleClass="ui-confirmdialog-yes"
+                                 icon="ui-icon-check"/>
+                <h:commandButton value="#{messages['button.dialog.no']}"
+                                 type="button"
+                                 styleClass="ui-confirmdialog-no"
+                                 icon="ui-icon-close"/>
+            </p:confirmDialog>
+        </form>
+    </ui:define>
 </ui:composition>

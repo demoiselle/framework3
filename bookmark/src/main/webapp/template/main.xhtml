@@ -11,12 +11,11 @@
 
 <head jsf:id="document_head">
     <title>#{messages['main.app.title']}</title>
-    <h:outputStylesheet library="default" name="css/styles.css"/>
 </head>
 
 <body jsf:id="document_body">
 
-<b:container layout="fluid">
+<b:container>
     <b:row>
         <b:column span="12">
             <ui:include src="/menu.xhtml"/>
@@ -28,15 +27,13 @@
             <form jsf:id="language_form" jsf:prependId="false">
                 <b:row>
                     <b:column span="6">
-                        <h:commandLink action="#{locales.setCurrentLocale('pt')}">
-                            <span class="ui-icon-locale-pt"/>
-                        </h:commandLink>
+                        <p:commandLink action="#{locales.setCurrentLocale('pt')}" ajax="false"
+                                       styleClass="ui-icon-locale-pt">&#160;</p:commandLink>
                     </b:column>
 
                     <b:column span="6">
-                        <h:commandLink action="#{locales.setCurrentLocale('en')}">
-                            <span class="ui-icon-locale-en"/>
-                        </h:commandLink>
+                        <p:commandLink action="#{locales.setCurrentLocale('en')}" ajax="false"
+                                       styleClass="ui-icon-locale-en">&#160;</p:commandLink>
                     </b:column>
                 </b:row>
             </form>
@@ -48,26 +45,27 @@
             <ui:insert name="body"/>
         </b:column>
     </b:row>
+
+    <b:row>
+        <b:column span="12">
+            <p:growl id="messages" globalOnly="true"/>
+        </b:column>
+    </b:row>
+
+    <b:row>
+        <b:column span="12">
+            <p:ajaxStatus style="width:16px;height:16px;">
+                <f:facet name="start">
+                </f:facet>
+
+                <f:facet name="complete">
+                    <h:outputText value=""/>
+                </f:facet>
+            </p:ajaxStatus>
+        </b:column>
+    </b:row>
 </b:container>
 
-<b:row>
-    <b:column span="12">
-        <p:growl id="messages" globalOnly="true"/>
-    </b:column>
-</b:row>
-
-<b:row>
-    <b:column span="12">
-        <p:ajaxStatus style="width:16px;height:16px;">
-            <f:facet name="start">
-            </f:facet>
-
-            <f:facet name="complete">
-                <h:outputText value=""/>
-            </f:facet>
-        </p:ajaxStatus>
-    </b:column>
-</b:row>
 </body>
 
 </html>
