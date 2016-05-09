@@ -7,6 +7,7 @@ import org.demoiselle.jsf.annotation.PreviousView;
 import org.demoiselle.jsf.stereotype.ViewController;
 import org.demoiselle.jsf.template.AbstractListPageBean;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
@@ -28,6 +29,12 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> impleme
 	@Inject
 	private BookmarkBC bookmarkBC;
 
+	@PostConstruct
+	protected void setPagination() {
+		getPagination().setTotalResults(bookmarkBC.countBookmarks());
+		getPagination().setPageSize(5);
+	}
+
 	@Override
 	protected List<Bookmark> handleResultList() {
 		return bookmarkBC.listAll();
@@ -47,5 +54,17 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> impleme
 			}
 		}
 		return getPreviousView();
+	}
+
+	public void setPage(int page) {
+		getPagination().setCurrentPage(page);
+	}
+
+	public void previousPage() {
+		getPagination().previousPage();
+	}
+
+	public void nextPage() {
+		getPagination().nextPage();
 	}
 }
