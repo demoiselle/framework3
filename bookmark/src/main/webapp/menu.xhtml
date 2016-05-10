@@ -11,7 +11,7 @@
             </b:navbarLinks>
 
             <b:dropMenu value="#{messages['label.user']}">
-                <b:navLink value="#{messages['menu.menuitem.login']}" href="#" rendered="#{!securityContext.loggedIn}" />
+                <b:navLink value="#{messages['menu.menuitem.login']}" href="login.jsf" rendered="#{!securityContext.loggedIn}" />
                 <b:navLink value="#{messages['menu.menuitem.quit']}" href="index.jsf" rendered="#{securityContext.loggedIn}"/>
             </b:dropMenu>
         </b:navBar>

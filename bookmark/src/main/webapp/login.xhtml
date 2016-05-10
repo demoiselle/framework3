@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:b="http://bootsfaces.net/ui"
+				xmlns:p="http://primefaces.org/ui"
+				xmlns:h="http://java.sun.com/jsf/html"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				template="/template/main.xhtml">
+	
+	<ui:define name="body">
+		<h:form id="login_form"> 
+		
+			<p:fieldset legend="#{messages['login.label']}">
+				<h:panelGrid id="fields" columns="3">
+					<h:outputLabel value="#{messages['label.user']}: " for="user" styleClass="text-input" />
+					<h:inputText id="user" value="#{credentials.username}" title="#{messages['label.user']}" required="true"/>
+					<p:message for="user" />
+	
+					<h:outputLabel value="#{messages['login.senha']}: " for="password" styleClass="text-input" />
+					<h:inputSecret id="password" value="#{credentials.password}" title="#{messages['login.senha']}" required="true"/>
+					<p:message for="password" />
+				</h:panelGrid>
+			</p:fieldset>
+			
+			<p:commandButton action="#{securityContext.login()}" styleClass="botao" id="enviar" 
+							value="#{messages['login.submeter']}" type="submit" url="/bookmark_edit.jsf"
+							ajax="false">  
+        	</p:commandButton>  
+		
+		</h:form>
+		
+	</ui:define>
+	
+</ui:composition>
