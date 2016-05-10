@@ -40,6 +40,10 @@ import org.demoiselle.pagination.Pagination;
 import org.demoiselle.util.Strings;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * <p>
@@ -50,7 +54,7 @@ import java.io.Serializable;
  * Internally, it stores the current page index on {@code currentPage} variable, the amount of records in a single page
  * on {@code pageSize}, and the total number of pages in {@code totalPages}.
  * </p>
- * 
+ *
  * @author SERPRO
  * @see Pagination
  */
@@ -58,11 +62,11 @@ public class PaginationImpl implements Serializable, Pagination {
 
 	private static final long serialVersionUID = 1L;
 
-	private int currentPage;
+	private int currentPage = 1;
 
 	private int pageSize;
 
-	private int totalResults;
+	private long totalResults;
 
 	private int totalPages;
 
@@ -73,7 +77,7 @@ public class PaginationImpl implements Serializable, Pagination {
 	}
 
 	private void reset() {
-		currentPage = 0;
+		currentPage = 1;
 		totalPages = 0;
 	}
 
@@ -87,8 +91,14 @@ public class PaginationImpl implements Serializable, Pagination {
 
 		if (totalPages == 0) {
 			reset();
-		} else if (getCurrentPage() >= totalPages) {
+		} else if (getCurrentPage() > totalPages) {
 			setCurrentPage(totalPages - 1);
+		}
+	}
+
+	private void validateOneIndexedValue(int input) throws IndexOutOfBoundsException {
+		if (input <= 0) {
+			throw new IndexOutOfBoundsException("colocar mensagem");
 		}
 	}
 
@@ -98,8 +108,14 @@ public class PaginationImpl implements Serializable, Pagination {
 		}
 	}
 
+	private void validateNegativeValue(long input) throws IndexOutOfBoundsException {
+		if (input < 0L) {
+			throw new IndexOutOfBoundsException("colocar mensagem");
+		}
+	}
+
 	private void validateCurrentPage(int currentPage) throws IndexOutOfBoundsException {
-		if (currentPage >= this.totalPages) {
+		if (currentPage > this.totalPages) {
 			if (this.totalPages > 0) {
 				throw new IndexOutOfBoundsException("colocar mensagem");
 			}
@@ -107,7 +123,7 @@ public class PaginationImpl implements Serializable, Pagination {
 	}
 
 	public void setCurrentPage(int currentPage) {
-		validateNegativeValue(currentPage);
+		validateOneIndexedValue(currentPage);
 		validateCurrentPage(currentPage);
 		this.currentPage = currentPage;
 	}
@@ -116,11 +132,11 @@ public class PaginationImpl implements Serializable, Pagination {
 		return pageSize;
 	}
 
-	public int getTotalResults() {
+	public long getTotalResults() {
 		return totalResults;
 	}
 
-	public void setTotalResults(int totalResults) {
+	public void setTotalResults(long totalResults) {
 		validateNegativeValue(totalResults);
 		this.totalResults = totalResults;
 
@@ -144,7 +160,7 @@ public class PaginationImpl implements Serializable, Pagination {
 	}
 
 	public int getFirstResult() {
-		return getCurrentPage() * getPageSize();
+		return (getCurrentPage()-1) * getPageSize();
 	}
 
 	public void setPageSize(int pageSize) {
@@ -171,9 +187,92 @@ public class PaginationImpl implements Serializable, Pagination {
 		validateFirstResult(firstResult);
 
 		if (firstResult > 0) {
-			setCurrentPage(firstResult / pageSize);
+			setCurrentPage((firstResult / pageSize) + 1);
 		} else {
-			setCurrentPage(0);
+			setCurrentPage(1);
+		}
+	}
+
+	@Override
+	public int[] getPages(int pageAmount, int pageAmountBefore) {
+		if (pageAmount < 0 || pageAmountBefore < 0) {
+			throw new IllegalArgumentException();
+		}
+
+		final int[] pages = new int[pageAmount + pageAmountBefore];
+
+		int i = 0;
+		if (pageAmountBefore > 0) {
+			for (i = 0; i < pageAmountBefore; i++) {
+				pages[i] = getCurrentPage() - (pageAmountBefore - i);
+			}
+		}
+
+		if (pageAmount > 0) {
+			for (i = pageAmountBefore; i < pageAmountBefore + pageAmount; i++) {
+				pages[i] = getCurrentPage() + i;
+			}
+		}
+
+		return pages;
+	}
+
+	@Override
+	public int[] getPages(int pageAmount) {
+		return getPages(pageAmount, 0);
+	}
+
+	@Override
+	public int[] getPages() {
+		if (getCurrentPage() > 0) {
+			return getPages(getTotalPages() - (getCurrentPage() - 1), 0);
+		}
+		else {
+			return getPages(getTotalPages(), 0);
+		}
+	}
+
+	@Override
+	public List<Integer> getPagesList() {
+		ArrayList<Integer> pages = new ArrayList<>();
+		for (int page : getPages()) {
+			pages.add(page);
+		}
+
+		return pages;
+	}
+
+	@Override
+	public List<Integer> getPagesList(int pageAmount) {
+		ArrayList<Integer> pages = new ArrayList<>();
+		for (int page : getPages(pageAmount)) {
+			pages.add(page);
+		}
+
+		return pages;
+	}
+
+	@Override
+	public List<Integer> getPagesList(int pageAmount, int pageAmountBefore) {
+		ArrayList<Integer> pages = new ArrayList<>();
+		for (int page : getPages(pageAmount, pageAmountBefore)) {
+			pages.add(page);
+		}
+
+		return pages;
+	}
+
+	@Override
+	public void nextPage() {
+		if (getCurrentPage() < getTotalPages()) {
+			setCurrentPage(getCurrentPage() + 1);
+		}
+	}
+
+	@Override
+	public void previousPage() {
+		if (getCurrentPage() > 1) {
+			setCurrentPage(getCurrentPage() - 1);
 		}
 	}
 

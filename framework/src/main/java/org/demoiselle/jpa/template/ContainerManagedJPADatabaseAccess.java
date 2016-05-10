@@ -68,7 +68,7 @@ public class ContainerManagedJPADatabaseAccess<T, I> extends JPADatabaseAccess<T
 	private EntityManager entityManager;
 
 	@Override
-	protected EntityManager getEntityManager() {
+	public EntityManager getEntityManager() {
 		return entityManager;
 	}
 }

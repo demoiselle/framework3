@@ -36,6 +36,8 @@
  */
 package org.demoiselle.pagination;
 
+import java.util.List;
+
 /**
  * <p>
  * Structure used to handle pagination of data results on both <i>backend</i> (i.e., persistence) and <i>frontend</i>
@@ -47,34 +49,34 @@ package org.demoiselle.pagination;
 public interface Pagination {
 
 	/**
-	 * Returns the current page.
+	 * Returns the (one-indexed) current page.
 	 */
 	int getCurrentPage();
 
 	/**
-	 * Sets the current page.
+	 * Sets the (one-indexed) current page.
 	 */
 	void setCurrentPage(int currentPage);
 
 	/**
-	 * Returns the page size.
+	 * Returns the number of items per page.
 	 */
 	int getPageSize();
 
 	/**
-	 * Sets the page size.
+	 * Sets the number of items per page.
 	 */
 	void setPageSize(int pageSize);
 
 	/**
 	 * Returns the total number of results.
 	 */
-	int getTotalResults();
+	long getTotalResults();
 
 	/**
 	 * Sets the total number of results and calculates the number of pages.
 	 */
-	void setTotalResults(int totalResults);
+	void setTotalResults(long totalResults);
 
 	/**
 	 * Returns the total number of pages.
@@ -90,5 +92,65 @@ public interface Pagination {
 	 * Sets the position for the first record and hence calculates current page according to page size.
 	 */
 	void setFirstResult(int firstResult);
+
+	/**
+	 * <p>Returns a list of page numbers from <code>{@link #getCurrentPage()} - pageAmountBefore</code> to
+	 * <code>{@link #getCurrentPage()} + (pageAmount - 1)</code>.</p>
+	 *
+	 * <p>For example, if the current page is 8 and this method is called with <code>pageAmount = 3</code>
+	 * and <code>pageAmountBefore=2</code> we get an array with the following values:
+	 * <pre>
+	 *     [6, 7, 8, 9, 10]
+	 * </pre>
+	 * </p>
+	 *
+	 * @param pageAmount           Amount of pages to return
+	 * @param pageAmountBefore     Amount of pages to list before the current page
+	 * @return An array of the page numbers that fit the criteria.
+	 */
+	int[] getPages(int pageAmount, int pageAmountBefore);
+
+	/**
+	 * Same as calling {@link #getPages(int, int)} with pageAmountBefore=0.
+	 * @see #getPages(int, int)
+	 */
+	int[] getPages(int pageAmount);
+
+	/**
+	 * Same as calling {@link #getPages(int, int)} with pageAmount = ({@link #getTotalPages()} - {@link #getCurrentPage()})
+	 * and pagesAmountBefore = 0.
+	 */
+	int[] getPages();
+
+	/**
+	 * Same as {@link #getPages()}, but returns result as a {@link List} of {@link Integer}.
+	 *
+	 * @see #getPages()
+	 */
+	List<Integer> getPagesList();
+
+	/**
+	 * Same as {@link #getPages(int)}, but returns result as a {@link List} of {@link Integer}.
+	 *
+	 * @see #getPages(int)
+	 */
+	List<Integer> getPagesList(int pageAmount);
+
+	/**
+	 * Same as {@link #getPages(int, int)}, but returns result as a {@link List} of {@link Integer}.
+	 *
+	 * @see #getPages(int, int)
+	 */
+	List<Integer> getPagesList(int pageAmount, int pageAmountBefore);
+
+	/**
+	 * Same as calling {@link #setCurrentPage(int)} with currentPage = {@link #getCurrentPage()} + 1.
+	 */
+	void nextPage();
+
+	/**
+	 * Same as calling {@link #setCurrentPage(int)} with currentPage = {@link #getCurrentPage()} - 1.
+	 */
+	void previousPage();
 
 }

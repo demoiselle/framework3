@@ -1,85 +1,156 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:b="http://bootsfaces.net/ui"
-                xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:jsf="http://xmlns.jcp.org/jsf"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="/template/main.xhtml">
 
     <ui:define name="body">
         <form jsf:id="form_bookmark_list" jsf:prependId="false">
-            <b:row>
-                <b:column span="12">
-                    <p:toolbar>
-                        <p:toolbarGroup align="left">
-                            <p:commandButton title="#{messages['button.new']}" icon="ui-icon-document"
-                                             action="#{bookmarkListMB.getNextView}"
-                                             actionListener="#{bookmarkListMB.clear}"
-                                             ajax="false"/>
+            <div class="row">
+                <div class="col-md-12 panel panel-default">
+                    <div class="panel-body">
+                        <div class="btn-toolbar" role="toolbar" aria-label="...">
+                            <div class="btn-group" role="group" aria-label="...">
+                                <button class="btn btn-xs btn-primary"
+                                        jsf:action="#{bookmarkListMB.getNextView}"
+                                        jsf:actionListener="#{bookmarkListMB.clear}">
+                                    <span class="glyphicon glyphicon-file" aria-hidden="true"/>
+                                    <span class="glyphicon-class">&#160;#{messages['button.new']}</span>
+                                </button>
 
-                            <p:commandButton title="#{messages['button.delete']}"
-                                             icon="ui-icon-trash"
-                                             type="button"
-                                             action="#{bookmarkListMB.deleteSelection}"
-                                             ajax="false">
-                                <p:confirm message="#{messages['label.confirm.delete']}"
-                                           header="#{messages['label.dialog.alert']}!"/>
-                            </p:commandButton>
-                        </p:toolbarGroup>
-                    </p:toolbar>
-                </b:column>
-            </b:row>
+                                <button type="button"
+                                        class="btn btn-xs btn-danger"
+                                        data-toggle="modal"
+                                        data-target="#dialog_delete">
+                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"/>
+                                    <span class="glyphicon-class">&#160;#{messages['button.delete']}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <b:row>
-                <b:column span="12">
-                    <p:dataTable id="list" var="bean" value="#{bookmarkListMB.resultList}">
-                        <f:facet name="header">#{messages['bookmark.list.table.title']}</f:facet>
-                        <p:column style="width:5%;">
-                            <h:selectBooleanCheckbox value="#{bookmarkListMB.selection[bean.id]}"/>
-                        </p:column>
-                        <p:column style="width:5%;" sortBy="#{bean.id}">
-                            <f:facet name="header">#{messages['bookmark.label.id']}</f:facet>
-                            <h:outputText value="#{bean.id}"/>
-                        </p:column>
-                        <p:column sortBy="#{bean.description}">
-                            <f:facet name="header">#{messages['bookmark.label.description']}</f:facet>
-                            <h:commandLink action="#{bookmarkListMB.getNextView}"
-                                           actionListener="#{bookmarkListMB.clear}">
-                                <h:outputText value="#{bean.description}"/>
-                                <f:param name="id" value="#{bean.id}"/>
-                            </h:commandLink>
-                        </p:column>
-                        <p:column sortBy="#{bean.link}">
-                            <f:facet name="header">#{messages['bookmark.label.link']}</f:facet>
-                            <h:commandLink action="#{bookmarkListMB.getNextView}"
-                                           actionListener="#{bookmarkListMB.clear}">
-                                <h:outputText value="#{bean.link}"/>
-                                <f:param name="id" value="#{bean.id}"/>
-                            </h:commandLink>
-                        </p:column>
-                    </p:dataTable>
-                </b:column>
-            </b:row>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table" jsf:id="tab_bookmarks">
+                        <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" onclick="selectAll(this);"/>
+                            </th>
+                            <th>#{messages['bookmark.label.id']}</th>
+                            <th>#{messages['bookmark.label.description']}</th>
+                            <th>#{messages['bookmark.label.link']}</th>
+                        </tr>
+                        </thead>
 
-            <b:row>
-                <b:column span="12">
-                    <p:confirmDialog global="true"
-                                     showEffect="bounce"
-                                     hideEffect="explode"
-                                     severity="alert">
-                        <p:commandButton value="#{messages['button.dialog.yes']}"
-                                         type="button"
-                                         styleClass="ui-confirmdialog-yes"
-                                         icon="ui-icon-check"/>
-                        <p:commandButton value="#{messages['button.dialog.no']}"
-                                         type="button"
-                                         styleClass="ui-confirmdialog-no"
-                                         icon="ui-icon-close"/>
-                    </p:confirmDialog>
-                </b:column>
-            </b:row>
+                        <tbody>
+                        <ui:repeat value="#{bookmarkListMB.resultList}" var="bean">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" jsf:id="bookmark_check"
+                                           jsf:value="#{bookmarkListMB.selection[bean.id]}"/>
+                                </td>
+                                <td>#{bean.id}</td>
+                                <td>
+                                    <a jsf:action="#{bookmarkListMB.getNextView}"
+                                       jsf:actionListener="#{bookmarkListMB.clear}">
+                                        <span>#{bean.description}</span>
+                                        <f:param name="id" value="#{bean.id}"/>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a jsf:action="#{bookmarkListMB.getNextView}"
+                                       jsf:actionListener="#{bookmarkListMB.clear}">
+                                        <span>#{bean.link}</span>
+                                        <f:param name="id" value="#{bean.id}"/>
+                                    </a>
+                                </td>
+                            </tr>
+                        </ui:repeat>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8 col-md-offset-4">
+                    <nav>
+                        <ul class="pagination">
+                            <li>
+                                <button class="btn btn-link"
+                                        type="button"
+                                        aria-label="Previous"
+                                        jsf:action="#{bookmarkListMB.previousPage}">
+                                    <span aria-hidden="true">&#171;</span>
+                                    <f:ajax render="tab_bookmarks"/>
+                                </button>
+                            </li>
+
+                            <ui:repeat id="bookmark_pages" value="#{bookmarkListMB.pagination.pagesList}" var="page">
+                                <li>
+                                    <button jsf:id="btn_page_command"
+                                            class="btn btn-link"
+                                            type="button"
+                                            jsf:action="#{bookmarkListMB.setPage(page)}">
+                                        #{page}
+                                        <f:ajax render="tab_bookmarks bookmark_pages"/>
+                                    </button>
+                                </li>
+                            </ui:repeat>
+
+                            <li>
+                                <button aria-label="Next"
+                                        class="btn btn-link"
+                                        type="button"
+                                        jsf:action="#{bookmarkListMB.nextPage}">
+                                    <span aria-hidden="true">&#187;</span>
+                                    <f:ajax render="tab_bookmarks"/>
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="modal fade" tabindex="-1" role="dialog" id="dialog_delete">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&#215;</span></button>
+                            <h4 class="modal-title">#{messages['label.confirm.delete']}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>#{messages['label.confirm.delete.text']}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">#{messages['button.dialog.no']}</button>
+                            <f:ajax render="tab_bookmarks" execute="@all" onevent="closeModalAfterAction">
+                                <button class="btn btn-primary" jsf:action="#{bookmarkListMB.deleteSelection}">
+                                    #{messages['button.dialog.yes']}
+                                </button>
+                            </f:ajax>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
         </form>
     </ui:define>
+
+    <ui:define name="script">
+        <script language="JavaScript">
+            function closeModalAfterAction(eventObj) {
+                $("#dialog_delete").modal('hide');
+            }
+
+            function selectAll(checkObj) {
+                $('[id$="bookmark_check"]').prop('checked', checkObj.checked);
+            }
+        </script>
+    </ui:define>
+
 </ui:composition>

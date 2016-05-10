@@ -5,10 +5,12 @@ import br.gov.serpro.demoiselle.bookmark.domain.Bookmark;
 import org.demoiselle.jsf.annotation.PreviousView;
 import org.demoiselle.jsf.stereotype.ViewController;
 import org.demoiselle.jsf.template.AbstractEditPageBean;
-import org.demoiselle.security.LoggedIn;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.Iterator;
 
 /**
  * @author SERPRO
@@ -55,7 +57,7 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 			}
 		}
 
-		return getNextView();
+		return null;
 	}
 
 	@Override
@@ -83,6 +85,24 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 			this.clear();
 		}
 
-		return getNextView();
+		return getPreviousView();
+	}
+
+	public String getMessageStyle(String clientId) {
+		String style = "";
+		for (Iterator<FacesMessage> it = FacesContext.getCurrentInstance().getMessages(clientId); it.hasNext(); ) {
+			FacesMessage msg = it.next();
+
+			if (msg.getSeverity().equals(FacesMessage.SEVERITY_WARN)) {
+				style = "has-warning";
+			}
+			else if (msg.getSeverity().equals(FacesMessage.SEVERITY_ERROR)
+					|| msg.getSeverity().equals(FacesMessage.SEVERITY_FATAL)) {
+				style = "has-error";
+				break;
+			}
+		}
+
+		return style;
 	}
 }

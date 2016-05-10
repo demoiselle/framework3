@@ -71,7 +71,7 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 	protected abstract EntityManager getEntityManager();
 
 	@SuppressWarnings("WeakerAccess")
-	protected Class<T> getBeanClass() {
+	public Class<T> getBeanClass() {
 		if (this.beanClass == null) {
 			this.beanClass = Reflections.getGenericTypeArgument(this.getClass(), 0);
 		}

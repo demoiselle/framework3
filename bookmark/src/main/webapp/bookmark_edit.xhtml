@@ -1,46 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-				xmlns:p="http://primefaces.org/ui"
-				xmlns:h="http://xmlns.jcp.org/jsf/html"
-				xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-				template="/template/main.xhtml">
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                template="/template/main.xhtml">
 
-	<ui:define name="body">
-		<h:form prependId="false">
-			<p:toolbar>
-				<p:toolbarGroup align="left">
-					<p:commandButton value="#{messages['button.save']}" action="#{bookmarkEditMB.insert}"
-						rendered="#{!bookmarkEditMB.updateMode}" ajax="false" />
-					<p:commandButton value="#{messages['button.save']}" action="#{bookmarkEditMB.update}"
-						rendered="#{bookmarkEditMB.updateMode}" ajax="false" />
-					<p:commandButton value="#{messages['button.delete']}" onclick="confirmation.show()"
-						rendered="#{bookmarkEditMB.updateMode}" type="button" immediate="true" ajax="false" />
-					<p:confirmDialog message="#{messages['label.confirm.delete']}" showEffect="bounce" hideEffect="explode"
-						header="#{messages['label.dialog.delete']}" severity="alert" widgetVar="confirmation">
-						<h:commandButton value="#{messages['button.dialog.yes']}" action="#{bookmarkEditMB.delete}" immediate="true"
-							ajax="false" />
-						<h:commandButton value="#{messages['button.dialog.no']}" onclick="confirmation.hide()" type="button" />
-					</p:confirmDialog>
-				</p:toolbarGroup>
-			</p:toolbar>
+    <ui:define name="body">
+        <form jsf:id="form_bookmark_edit" jsf:prependId="false">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                <div class="btn-group" role="group" aria-label="...">
 
-			<br />
+                                    <button class="btn btn-xs btn-primary" jsf:action="#{bookmarkEditMB.insert}"
+                                            jsf:rendered="#{!bookmarkEditMB.updateMode}">
+                                        <span class="glyphicon glyphicon-floppy-disk"/> #{messages['button.save']}
+                                    </button>
 
-			<p:fieldset legend="#{messages['bookmark.label']}" toggleable="true" toggleSpeed="500">
-				<h:panelGrid id="fields" columns="3">
-					<h:outputLabel value="#{messages['bookmark.label.id']}: " for="id" styleClass="text-input" />
-					<h:outputText id="id" value="#{bookmarkEditMB.bean.id}" />
-					<p:message for="id" />
+                                    <button class="btn btn-xs btn-primary" jsf:action="#{bookmarkEditMB.update}"
+                                            jsf:rendered="#{bookmarkEditMB.updateMode}">
+                                        <span class="glyphicon glyphicon-pencil"/> #{messages['button.save']}
+                                    </button>
 
-					<h:outputLabel value="#{messages['bookmark.label.description']}: " for="description" styleClass="text-input" />
-					<h:inputText id="description" value="#{bookmarkEditMB.bean.description}"
-						title="#{messages['bookmark.alt.description']}" />
-					<p:message for="description" />
+                                    <button class="btn btn-xs btn-danger"
+                                            type="button"
+                                            data-toggle="modal"
+                                            data-target="#dialog_delete"
+                                            jsf:rendered="#{bookmarkEditMB.updateMode}">
+                                        <span class="glyphicon glyphicon-trash"/> #{messages['button.delete']}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-					<h:outputLabel value="#{messages['bookmark.label.link']}: " for="link" styleClass="text-input" />
-					<h:inputText id="link" value="#{bookmarkEditMB.bean.link}" title="#{messages['bookmark.alt.link']}" />
-					<p:message for="link" />
-				</h:panelGrid>
-			</p:fieldset>
-		</h:form>
-	</ui:define>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading panel-collapse">
+                            <h3 class="panel-title">#{messages['bookmark.label']}</h3>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label"
+                                   jsf:for="bookmark_id">#{messages['bookmark.label.id']}: </label>
+                            <input type="hidden" jsf:value="#{bookmarkEditMB.bean.id}" autocomplete="off"/>
+                            <span jsf:id="bookmark_id">#{bookmarkEditMB.bean.id}</span>
+                        </div>
+
+                        <div class="form-group #{bookmarkEditMB.getMessageStyle('bookmark_description')}">
+                            <label class="control-label"
+                                   jsf:for="bookmark_description">#{messages['bookmark.label.description']}: </label>
+                            <input type="text" class="form-control" jsf:id="bookmark_description"
+                                   placeholder="#{messages['hint.description']}"
+                                   jsf:value="#{bookmarkEditMB.bean.description}"/>
+                            <h:message for="bookmark_description" warnClass="control-label" errorClass="control-label"
+                                       fatalClass="control-label"/>
+                        </div>
+
+                        <div class="form-group #{bookmarkEditMB.getMessageStyle('bookmark_link')}">
+                            <label class="control-label"
+                                   jsf:for="bookmark_link">#{messages['bookmark.label.link']}: </label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="#{messages['hint.link']}"
+                                   jsf:id="bookmark_link"
+                                   jsf:value="#{bookmarkEditMB.bean.link}"/>
+                            <h:message for="bookmark_link" warnClass="control-label" errorClass="control-label"
+                                       fatalClass="control-label"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" tabindex="-1" role="dialog" id="dialog_delete">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&#215;</span></button>
+                            <h4 class="modal-title">#{messages['label.confirm.delete']}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>#{messages['label.confirm.delete.text']}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">#{messages['button.dialog.no']}</button>
+                            <f:ajax render="tab_bookmarks" execute="@all" onevent="closeModalAfterAction">
+                                <button class="btn btn-primary" jsf:action="#{bookmarkEditMB.delete}">
+                                    #{messages['button.dialog.yes']}
+                                </button>
+                            </f:ajax>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </form>
+    </ui:define>
+
+    <ui:define name="script">
+        <script language="JavaScript">
+            function closeModalAfterAction(eventObj) {
+                $("#dialog_delete").modal('hide');
+            }
+        </script>
+    </ui:define>
 </ui:composition>
