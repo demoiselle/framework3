@@ -5,6 +5,7 @@ import br.gov.serpro.demoiselle.bookmark.domain.Bookmark;
 import org.demoiselle.jsf.annotation.PreviousView;
 import org.demoiselle.jsf.stereotype.ViewController;
 import org.demoiselle.jsf.template.AbstractEditPageBean;
+import org.demoiselle.security.LoggedIn;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -44,7 +45,7 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 
 	@Override
 	@Transactional
-//	@LoggedIn
+	@LoggedIn
 	public String insert() {
 		Bookmark bean = getBean();
 

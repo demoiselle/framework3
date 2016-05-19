@@ -16,6 +16,10 @@ public class BookmarkAuthenticator implements Authenticator {
 
     private Principal principal;
 
+    /**
+     * Authenticates any user since that password be "secret".
+     * @throws Exception
+     */
     @Override
     public void authenticate() throws Exception {
 
