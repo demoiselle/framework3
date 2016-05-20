@@ -3,82 +3,83 @@
  * Copyright (C) 2010 SERPRO
  * ----------------------------------------------------------------------------
  * This file is part of Demoiselle Framework.
- * 
+ *
  * Demoiselle Framework is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License version 3
  * as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License version 3
  * along with this program; if not,  see <http://www.gnu.org/licenses/>
  * or write to the Free Software Foundation, Inc., 51 Franklin Street,
  * Fifth Floor, Boston, MA  02110-1301, USA.
  * ----------------------------------------------------------------------------
  * Este arquivo é parte do Framework Demoiselle.
- * 
+ *
  * O Framework Demoiselle é um software livre; você pode redistribuí-lo e/ou
  * modificá-lo dentro dos termos da GNU LGPL versão 3 como publicada pela Fundação
  * do Software Livre (FSF).
- * 
+ *
  * Este programa é distribuído na esperança que possa ser útil, mas SEM NENHUMA
  * GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou
  * APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU/LGPL em português
  * para maiores detalhes.
- * 
+ *
  * Você deve ter recebido uma cópia da GNU LGPL versão 3, sob o título
  * "LICENCA.txt", junto com esse programa. Se não, acesse <http://www.gnu.org/licenses/>
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.internal.configuration;
+package org.demoiselle.jsf.internal.implementation;
 
-import org.demoiselle.annotation.Name;
-import org.demoiselle.configuration.Configuration;
-import org.demoiselle.security.Authenticator;
-import org.demoiselle.security.Authorizer;
+import org.demoiselle.jsf.internal.configuration.JsfSecurityConfig;
+import org.demoiselle.security.InvalidCredentialsException;
+import org.demoiselle.security.NotLoggedInException;
 
-import java.io.Serializable;
+import javax.enterprise.inject.spi.CDI;
+import javax.faces.context.ExceptionHandler;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
+
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 
 /**
- * A <code>SecurityConfig</code> object is responsible for specifying which security configurations should be used for a
- * particular application.
- * 
  * @author SERPRO
  */
-@Configuration(prefix = "demoiselle.security")
-public class SecurityConfig implements Serializable {
+public class AuthenticationExceptionHandler extends AbstractExceptionHandler {
 
-	private static final long serialVersionUID = 1L;
+    private transient JsfSecurityConfig config;
 
-	@Name("enabled")
-	private boolean enabled = true;
+    public AuthenticationExceptionHandler(final ExceptionHandler wrapped) {
+        super(wrapped);
+    }
 
-	@Name("authenticator.class")
-	private Class<? extends Authenticator> authenticatorClass;
+    protected boolean handleException(final Throwable cause, FacesContext facesContext) {
+        boolean handled = false;
 
-	@Name("authorizer.class")
-	private Class<? extends Authorizer> authorizerClass;
+        if (cause instanceof NotLoggedInException || cause instanceof InvalidCredentialsException) {
+            handled = true;
 
-	/**
-	 * Tells whether or not the security is enabled for the current application. This value could be defined in the
-	 * <b>demoiselle.properties</b> file, using the key <i>frameworkdemoiselle.security.enabled</i>.
-	 * 
-	 * @return the value defined for the key <i>frameworkdemoiselle.security.enabled</i> in the
-	 *         <b>demoiselle.properties</b> file. If there is no value defined, returns the default value <tt>true</tt>
-	 */
-	public boolean isEnabled() {
-		return this.enabled;
-	}
+            if (getConfig().isRedirectEnabled()) {
+                CDI.current().select(SecurityObserver.class).get().redirectToLoginPage(); //Beans.getReference(SecurityObserver.class).redirectToLoginPage();
+            } else {
+                HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+                response.setStatus(SC_FORBIDDEN);
+            }
+        }
 
-	public Class<? extends Authenticator> getAuthenticatorClass() {
-		return this.authenticatorClass;
-	}
+        return handled;
+    }
 
-	public Class<? extends Authorizer> getAuthorizerClass() {
-		return this.authorizerClass;
-	}
+    public JsfSecurityConfig getConfig() {
+        if (this.config == null) {
+            this.config = CDI.current().select(JsfSecurityConfig.class).get(); //this.config = Beans.getReference(JsfSecurityConfig.class);
+        }
+
+        return this.config;
+    }
 }
