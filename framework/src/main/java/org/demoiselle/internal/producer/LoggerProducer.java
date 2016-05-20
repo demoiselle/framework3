@@ -40,12 +40,14 @@ import org.demoiselle.annotation.Name;
 import org.demoiselle.internal.proxy.LoggerProxy;
 import org.demoiselle.util.CDIUtils;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import java.io.Serializable;
 import java.util.logging.Logger;
 
+@Dependent
 public class LoggerProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -64,6 +66,10 @@ public class LoggerProducer implements Serializable {
 		return create(name);
 	}
 
+	/**
+	 * Produces a {@link Logger} instance categorized by the value
+	 * defined by the {@link Name} literal.
+	 */
 	@Name
 	@Produces
 	public Logger createNamed(final InjectionPoint ip) throws ClassNotFoundException {

@@ -53,12 +53,6 @@
 			<scope>provided</scope>
 			<version>${javaee.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-web-api</artifactId>
-			<scope>provided</scope>
-			<version>${javaee.version}</version>
-		</dependency>
 
 		<!-- jsr-340 api -->
 		<dependency>
@@ -81,7 +75,6 @@
 			<scope>provided</scope>
 			<version>${hibernate.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<properties>

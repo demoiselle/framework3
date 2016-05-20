@@ -34,61 +34,40 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.servlet.internal.implementation;
+package org.demoiselle.annotation.literal;
 
-import org.demoiselle.internal.configuration.PaginationConfig;
-import org.demoiselle.internal.implementation.PaginationImpl;
-import org.demoiselle.pagination.Pagination;
-import org.demoiselle.pagination.PaginationContext;
+import org.demoiselle.annotation.Name;
+import org.demoiselle.annotation.Type;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.spi.CDI;
-import java.io.Serializable;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import javax.enterprise.util.AnnotationLiteral;
 
 /**
- * <p>
- * Context implementation reserved for pagination purposes. Internally a hash map is used to store pagination data for
- * each class type.
- * </p>
+ * Annotation litteral that allows to create instances of the {@link Type} literal. The created instance can then be
+ * used to call {@link Beans#getReference(Class type, Annotation... qualifiers)}.
  * 
+ * @see Beans
+ * @see AmbiguousQualifier
  * @author SERPRO
- * @see PaginationContext
  */
-@RequestScoped
-public class RequestScopedPaginationContextImpl implements Serializable, PaginationContext {
+@SuppressWarnings("all")
+public class TypeQualifier extends AnnotationLiteral<Type> implements Type {
 
 	private static final long serialVersionUID = 1L;
 
-	private PaginationConfig config;
+	private final Class<?> value;
 
-	private final Map<Class<?>, Pagination> cache = new ConcurrentHashMap<>();
-
-	public RequestScopedPaginationContextImpl() {}
-
-	public Pagination getPagination(final Class<?> clazz) {
-		return this.getPagination(clazz, false);
+	/**
+	 * Constructor with string value of name literal.
+	 *
+	 * @param value
+	 *            value of name literal.
+	 */
+	public TypeQualifier(Class<?> value) {
+		this.value = value;
 	}
 
-	public Pagination getPagination(final Class<?> clazz, final boolean create) {
-		Pagination pagination = cache.get(clazz);
-
-		if (pagination == null && create) {
-			pagination = new PaginationImpl();
-			pagination.setPageSize(getConfig().getPageSize());
-
-			cache.put(clazz, pagination);
-		}
-
-		return pagination;
-	}
-
-	private PaginationConfig getConfig() {
-		if (config == null) {
-			config = CDI.current().select(PaginationConfig.class).get();
-		}
-
-		return config;
+	@Override
+	public Class<?> value() {
+		return this.value;
 	}
 }

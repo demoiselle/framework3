@@ -52,11 +52,13 @@ import org.demoiselle.annotation.Name;
 import org.demoiselle.jsf.internal.implementation.ParameterImpl;
 import org.demoiselle.jsf.util.Parameter;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import java.io.Serializable;
 
+@Dependent
 public class ParameterProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;

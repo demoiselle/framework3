@@ -6,7 +6,9 @@
                 template="/template/main.xhtml">
 
     <ui:define name="body">
-        <form jsf:id="form_bookmark_list" jsf:prependId="false">
+        <form jsf:id="form_bookmark_list">
+
+            <!-- Toolbar -->
             <div class="row">
                 <div class="col-md-12 panel panel-default">
                     <div class="panel-body">
@@ -32,6 +34,7 @@
                 </div>
             </div>
 
+            <!-- Bookmark List Table -->
             <div class="row">
                 <div class="col-md-12">
                     <table class="table" jsf:id="tab_bookmarks">
@@ -75,46 +78,50 @@
                 </div>
             </div>
 
+            <!-- Pagination widget -->
             <div class="row">
                 <div class="col-md-8 col-md-offset-4">
                     <nav>
                         <ul class="pagination">
                             <li>
-                                <button class="btn btn-link"
-                                        type="button"
-                                        aria-label="Previous"
-                                        jsf:action="#{bookmarkListMB.previousPage}">
+                                <a aria-label="Previous"
+                                   jsf:action="#{bookmarkListMB.list}"
+                                   jsf:actionListener="#{bookmarkListMB.setPage}"
+                                   jsf:rendered="#{!bookmarkListMB.bookmarkPagination.firstPage}">
                                     <span aria-hidden="true">&#171;</span>
-                                    <f:ajax render="tab_bookmarks"/>
-                                </button>
+                                    <f:attribute name="page"
+                                                 value="#{bookmarkListMB.bookmarkPagination.currentPage - 1}"/>
+                                </a>
                             </li>
 
-                            <ui:repeat id="bookmark_pages" value="#{bookmarkListMB.pagination.pagesList}" var="page">
+                            <ui:repeat id="bookmark_pages" value="#{bookmarkListMB.bookmarkPagination.pagesList}"
+                                       var="page">
                                 <li>
-                                    <button jsf:id="btn_page_command"
-                                            class="btn btn-link"
-                                            type="button"
-                                            jsf:action="#{bookmarkListMB.setPage(page)}">
+                                    <a jsf:id="btn_page_command"
+                                       jsf:action="#{bookmarkListMB.list}"
+                                       jsf:actionListener="#{bookmarkListMB.setPage}">
                                         #{page}
-                                        <f:ajax render="tab_bookmarks bookmark_pages"/>
-                                    </button>
+                                        <f:attribute name="page" value="#{page}"/>
+                                    </a>
                                 </li>
                             </ui:repeat>
 
                             <li>
-                                <button aria-label="Next"
-                                        class="btn btn-link"
-                                        type="button"
-                                        jsf:action="#{bookmarkListMB.nextPage}">
+                                <a aria-label="Next"
+                                   jsf:action="#{bookmarkListMB.list}"
+                                   jsf:actionListener="#{bookmarkListMB.setPage}"
+                                   jsf:rendered="#{!bookmarkListMB.bookmarkPagination.lastPage}">
                                     <span aria-hidden="true">&#187;</span>
-                                    <f:ajax render="tab_bookmarks"/>
-                                </button>
+                                    <f:attribute name="page"
+                                                 value="#{bookmarkListMB.bookmarkPagination.currentPage + 1}"/>
+                                </a>
                             </li>
                         </ul>
                     </nav>
                 </div>
             </div>
 
+            <!-- Confirmation Dialog Widget -->
             <div class="modal fade" tabindex="-1" role="dialog" id="dialog_delete">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -129,15 +136,15 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default"
                                     data-dismiss="modal">#{messages['button.dialog.no']}</button>
-                            <f:ajax render="tab_bookmarks" execute="@all" onevent="closeModalAfterAction">
-                                <button class="btn btn-primary" jsf:action="#{bookmarkListMB.deleteSelection}">
-                                    #{messages['button.dialog.yes']}
-                                </button>
-                            </f:ajax>
+
+                            <button class="btn btn-primary" jsf:action="#{bookmarkListMB.deleteSelection}">
+                                #{messages['button.dialog.yes']}
+                            </button>
+
                         </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
+                    </div>
+                </div>
+            </div>
         </form>
     </ui:define>
 
@@ -150,6 +157,8 @@
             function selectAll(checkObj) {
                 $('[id$="bookmark_check"]').prop('checked', checkObj.checked);
             }
+
+
         </script>
     </ui:define>
 

@@ -3,10 +3,7 @@ package org.demoiselle.internal.bootstrap;
 import org.demoiselle.util.Reflections;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.WithAnnotations;
+import javax.enterprise.inject.spi.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -37,8 +34,8 @@ public abstract class AbstractStrategyBootstrap<I> implements Extension {
 		return this.cache;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event) {
+	@SuppressWarnings({ "unchecked", "UnusedParameters" })
+	public <T> void processAnnotatedType(@Observes final ProcessAnnotatedType<T> event, BeanManager beanManager) {
 		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
 
 		if (Reflections.isOfType(annotatedType.getJavaClass(), this.getStrategyClass())) {

@@ -9,6 +9,7 @@
 		<class>org.demoiselle.security.LoggedInInterceptor</class>
 		<class>org.demoiselle.security.RequiredPermissionInterceptor</class>
 		<class>org.demoiselle.security.RequiredRoleInterceptor</class>
+		<class>org.demoiselle.configuration.ConfigurationInterceptor</class>
 	</interceptors>
 
 </beans>

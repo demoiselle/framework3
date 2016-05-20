@@ -1,4 +1,3 @@
 org.demoiselle.internal.bootstrap.CoreBootstrap
-org.demoiselle.internal.bootstrap.ConfigurationBootstrap
 org.demoiselle.internal.bootstrap.StartupBootstrap
 org.demoiselle.internal.bootstrap.ShutdownBootstrap

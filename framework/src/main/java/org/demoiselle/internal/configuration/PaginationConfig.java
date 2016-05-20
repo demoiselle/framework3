@@ -55,7 +55,7 @@ public class PaginationConfig implements Serializable {
 	@Name("page.size")
 	private int pageSize = 10;
 
-	@Name("max.page.links")
+	@Name("page.maxlinks")
 	private int maxPageLinks = 5;
 
 	/**
@@ -70,10 +70,10 @@ public class PaginationConfig implements Serializable {
 	}
 
 	/**
-	 * Returns the maximum number of pages that will be shown in a data grid footer
+	 * Returns the maximum number of pages to be shown as selectable options on the presentation layer.
 	 * 
-	 * @return the value defined for the key <i>frameworkdemoiselle.pagination.max.page.links</i> in the
-	 *         <b>demoiselle.properties</b> file. If there is no value defined, returns the default value 5
+	 * @return the value defined for the key <i>frameworkdemoiselle.pagination.page.maxlinks</i> in the
+	 *         <b>demoiselle.properties</b> file. If there is no value defined, returns the default value of 5.
 	 */
 	@SuppressWarnings("unused")
 	public int getMaxPageLinks() {

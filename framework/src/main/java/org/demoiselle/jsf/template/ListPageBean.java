@@ -58,11 +58,24 @@ import javax.faces.model.DataModel;
  */
 public interface ListPageBean<T, I> extends PageBean {
 
+	/**
+	 * @return The collection this bean is intended to manage
+	 * as a {@link DataModel}.
+	 *
+	 */
 	DataModel<T> getDataModel();
 
+	/**
+	 * @return The collection this bean is intended to manage
+	 * as a {@link Collection}.
+	 *
+	 */
 	Collection<T> getResultList();
 
-	String list();
+	/**
+	 * Action intended to trigger the listing of entities on the page
+	 */
+	void list();
 
 	Map<I, Boolean> getSelection();
 

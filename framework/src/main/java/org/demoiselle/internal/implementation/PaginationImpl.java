@@ -36,9 +36,13 @@
  */
 package org.demoiselle.internal.implementation;
 
+import org.demoiselle.annotation.literal.NameQualifier;
+import org.demoiselle.internal.configuration.PaginationConfig;
 import org.demoiselle.pagination.Pagination;
+import org.demoiselle.util.ResourceBundle;
 import org.demoiselle.util.Strings;
 
+import javax.enterprise.inject.spi.CDI;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,62 +66,61 @@ public class PaginationImpl implements Serializable, Pagination {
 
 	private static final long serialVersionUID = 1L;
 
-	private int currentPage = 1;
+	private int currentPage = -1;
 
-	private int pageSize;
+	private int pageSize = -1;
 
-	private long totalResults;
+	private long totalResults = -1;
 
-	private int totalPages;
+	private int totalPages = -1;
+
+	private boolean initialized = false;
+
+	private transient PaginationConfig configuration;
+
+	private transient ResourceBundle bundle;
 
 	public PaginationImpl() {
-		pageSize = 0;
-		totalResults = 0;
 		reset();
 	}
 
-	private void reset() {
-		currentPage = 1;
-		totalPages = 0;
+	@Override
+	public void reset() {
+		pageSize = -1;
+		totalResults = -1;
+		currentPage = -1;
+		totalPages = -1;
+		initialized = false;
 	}
 
 	public int getCurrentPage() {
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
+		}
 		return currentPage;
 	}
 
 	private void setTotalPages(int totalPages) {
-		validateNegativeValue(totalPages);
 		this.totalPages = totalPages;
 
 		if (totalPages == 0) {
 			reset();
-		} else if (getCurrentPage() > totalPages) {
-			setCurrentPage(totalPages - 1);
+		} else if (totalPages > 0 && getCurrentPage() > totalPages) {
+			setCurrentPage(totalPages);
 		}
 	}
 
 	private void validateOneIndexedValue(int input) throws IndexOutOfBoundsException {
 		if (input <= 0) {
-			throw new IndexOutOfBoundsException("colocar mensagem");
-		}
-	}
-
-	private void validateNegativeValue(int input) throws IndexOutOfBoundsException {
-		if (input < 0) {
-			throw new IndexOutOfBoundsException("colocar mensagem");
-		}
-	}
-
-	private void validateNegativeValue(long input) throws IndexOutOfBoundsException {
-		if (input < 0L) {
+			//TODO colocar mensagem
 			throw new IndexOutOfBoundsException("colocar mensagem");
 		}
 	}
 
 	private void validateCurrentPage(int currentPage) throws IndexOutOfBoundsException {
 		if (currentPage > this.totalPages) {
-			if (this.totalPages > 0) {
-				throw new IndexOutOfBoundsException("colocar mensagem");
+			if (this.totalPages >= 0) {
+				throw new IndexOutOfBoundsException( getBundle().getString("pagination-invalid-value", currentPage) );
 			}
 		}
 	}
@@ -126,45 +129,52 @@ public class PaginationImpl implements Serializable, Pagination {
 		validateOneIndexedValue(currentPage);
 		validateCurrentPage(currentPage);
 		this.currentPage = currentPage;
+		this.initialized = true;
 	}
 
 	public int getPageSize() {
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
+		}
 		return pageSize;
 	}
 
 	public long getTotalResults() {
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
+		}
 		return totalResults;
 	}
 
 	public void setTotalResults(long totalResults) {
-		validateNegativeValue(totalResults);
 		this.totalResults = totalResults;
-
-		if (totalResults > 0) {
-			setTotalPages();
-		} else {
-			reset();
-		}
+		this.initialized = true;
+		setTotalPages();
 	}
 
 	private void setTotalPages() {
 		if (totalResults > 0) {
 			setTotalPages((int) Math.ceil(totalResults * 1d / getPageSize()));
 		} else {
-			setTotalPages(0);
+			setTotalPages((int) totalResults);
 		}
 	}
 
 	public int getTotalPages() {
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
+		}
 		return totalPages;
 	}
 
 	public int getFirstResult() {
-		return (getCurrentPage()-1) * getPageSize();
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
+		}
+		return (getCurrentPage() - 1) * getPageSize();
 	}
 
 	public void setPageSize(int pageSize) {
-		validateNegativeValue(pageSize);
 		this.pageSize = pageSize;
 
 		if (pageSize > 0) {
@@ -177,8 +187,14 @@ public class PaginationImpl implements Serializable, Pagination {
 	private void validateFirstResult(int firstResult) throws IndexOutOfBoundsException {
 		if (firstResult >= this.totalResults) {
 			if (this.totalResults > 0) {
-				throw new IndexOutOfBoundsException("colocar mensagem");
+				throw new IndexOutOfBoundsException( getBundle().getString("pagination-invalid-value", firstResult) );
 			}
+		}
+	}
+
+	private void validateNegativeValue(long input) throws IndexOutOfBoundsException {
+		if (input < 0L) {
+			throw new IndexOutOfBoundsException( getBundle().getString("pagination-invalid-value", input) );
 		}
 	}
 
@@ -191,26 +207,36 @@ public class PaginationImpl implements Serializable, Pagination {
 		} else {
 			setCurrentPage(1);
 		}
+
+		initialized = true;
 	}
 
 	@Override
-	public int[] getPages(int pageAmount, int pageAmountBefore) {
-		if (pageAmount < 0 || pageAmountBefore < 0) {
+	public int[] getPages(final int pagesAfterCurrent, final int pagesBeforeCurrent) {
+		if (pagesAfterCurrent < 0 || pagesBeforeCurrent < 0) {
 			throw new IllegalArgumentException();
 		}
 
-		final int[] pages = new int[pageAmount + pageAmountBefore];
+		// Se pagesBeforeCurrent tem mais paginas que o possível (pagina atual é 2 e pagesBeforeCurrent=3 por exemplo)
+		// calculamos aqui um número válido para pagesBeforeCurrent
+		final int remainingPagesBefore =
+				pagesBeforeCurrent < getCurrentPage() ? pagesBeforeCurrent : getCurrentPage() - 1;
+		final int[] pages = new int[1 + pagesAfterCurrent + remainingPagesBefore];
 
-		int i = 0;
-		if (pageAmountBefore > 0) {
-			for (i = 0; i < pageAmountBefore; i++) {
-				pages[i] = getCurrentPage() - (pageAmountBefore - i);
+		int i = -1; // Se o IF abaixo não entrar, precisamos de i == -1 para
+		// que a chamada 'pages[++i]' abaixo resulte em i==0
+
+		if (remainingPagesBefore > 0) {
+			for (i = 0; i < remainingPagesBefore; i++) {
+				pages[i] = getCurrentPage() - (remainingPagesBefore - i);
 			}
 		}
 
-		if (pageAmount > 0) {
-			for (i = pageAmountBefore; i < pageAmountBefore + pageAmount; i++) {
-				pages[i] = getCurrentPage() + i;
+		pages[++i] = getCurrentPage();
+
+		if (pagesAfterCurrent > 0) {
+			for (i = remainingPagesBefore + 1; i < remainingPagesBefore + pagesAfterCurrent + 1; i++) {
+				pages[i] = i + 1;
 			}
 		}
 
@@ -218,22 +244,43 @@ public class PaginationImpl implements Serializable, Pagination {
 	}
 
 	@Override
-	public int[] getPages(int pageAmount) {
-		return getPages(pageAmount, 0);
+	public int[] getPages(final int pagesAfterCurrent) {
+		return getPages(pagesAfterCurrent, 0);
 	}
 
 	@Override
 	public int[] getPages() {
-		if (getCurrentPage() > 0) {
-			return getPages(getTotalPages() - (getCurrentPage() - 1), 0);
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
 		}
-		else {
-			return getPages(getTotalPages(), 0);
+
+		final int maxLinks = getConfiguration().getMaxPageLinks();
+		int linksBefore;
+		int linksAfter;
+
+		if (getCurrentPage() > (maxLinks / 2)) {
+			// Se maxLinks é par reduzimos linksBefore em 1, pois a distribuição deve ficar:
+			// [x] [0] [x] [x], onde [x] é uma página antes ou depois e [0] é a página atual.
+			// Se maxLinks é impar não precisamos reduzir linksBefore em 1 pois a página atual
+			// fica exatamente no meio:
+			// [x][x][0][x][x]
+			// totalizando em metade de maxLinks antes, metade depois e a página atual no meio.
+			linksBefore = ((maxLinks & 1) == 0) ? (maxLinks / 2) - 1 : (maxLinks / 2);
+			linksAfter = (maxLinks / 2);
+		} else {
+			linksBefore = getCurrentPage() - 1;
+			linksAfter = maxLinks - linksBefore - 1;
 		}
+
+		return getPages(linksAfter, linksBefore);
 	}
 
 	@Override
 	public List<Integer> getPagesList() {
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
+		}
+
 		ArrayList<Integer> pages = new ArrayList<>();
 		for (int page : getPages()) {
 			pages.add(page);
@@ -243,9 +290,13 @@ public class PaginationImpl implements Serializable, Pagination {
 	}
 
 	@Override
-	public List<Integer> getPagesList(int pageAmount) {
+	public List<Integer> getPagesList(int pagesAfterCurrent) {
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
+		}
+
 		ArrayList<Integer> pages = new ArrayList<>();
-		for (int page : getPages(pageAmount)) {
+		for (int page : getPages(pagesAfterCurrent)) {
 			pages.add(page);
 		}
 
@@ -253,9 +304,13 @@ public class PaginationImpl implements Serializable, Pagination {
 	}
 
 	@Override
-	public List<Integer> getPagesList(int pageAmount, int pageAmountBefore) {
+	public List<Integer> getPagesList(int pagesAfterCurrent, int pagesBeforeCurrent) {
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
+		}
+
 		ArrayList<Integer> pages = new ArrayList<>();
-		for (int page : getPages(pageAmount, pageAmountBefore)) {
+		for (int page : getPages(pagesAfterCurrent, pagesBeforeCurrent)) {
 			pages.add(page);
 		}
 
@@ -263,21 +318,46 @@ public class PaginationImpl implements Serializable, Pagination {
 	}
 
 	@Override
-	public void nextPage() {
-		if (getCurrentPage() < getTotalPages()) {
-			setCurrentPage(getCurrentPage() + 1);
+	public boolean isFirstPage() {
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
 		}
+
+		return getCurrentPage() == 1;
 	}
 
 	@Override
-	public void previousPage() {
-		if (getCurrentPage() > 1) {
-			setCurrentPage(getCurrentPage() - 1);
+	public boolean isLastPage() {
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
 		}
+
+		return getTotalPages() > 0 && getCurrentPage() == getTotalPages();
+	}
+
+	@Override
+	public boolean isInitialized() {
+		return initialized;
 	}
 
 	@Override
 	public String toString() {
 		return Strings.toString(this);
+	}
+
+	private PaginationConfig getConfiguration() {
+		if (configuration == null) {
+			configuration = CDI.current().select(PaginationConfig.class).get();
+		}
+
+		return configuration;
+	}
+
+	private ResourceBundle getBundle() {
+		if (bundle == null) {
+			bundle = CDI.current().select(ResourceBundle.class, new NameQualifier("demoiselle-core-bundle")).get();
+		}
+
+		return bundle;
 	}
 }

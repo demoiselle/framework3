@@ -44,8 +44,13 @@ import java.util.MissingResourceException;
 import java.util.Set;
 
 /**
- * The Demoiselle's ResourceBundle extends the abstraction java.util.ResourceBundle, 
- * and provide the locale and the base name for the bundle.
+ * <p>The Demoiselle's ResourceBundle extends the abstraction {@link java.util.ResourceBundle},
+ * and provide the locale and the base name for the bundle.</p>
+ *
+ * <p>To select which resource properties file to load when injecting beans of this class, qualify
+ * the injection point with {@link org.demoiselle.annotation.Name}, using the resource name (without
+ * the '.properties' extension) as the value. If the injection point isn't qualified the default
+ * file <code>messages.properties</code> will be loaded from the root of the classpath.</p>
  * 
  * @author SERPRO
  */

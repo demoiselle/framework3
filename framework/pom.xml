@@ -15,6 +15,14 @@
 	</parent>
 
 	<dependencies>
+		<!-- jsr-342 api -->
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<scope>provided</scope>
+			<version>${javaee.version}</version>
+		</dependency>
+
 		<!-- apache commons configuration -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>

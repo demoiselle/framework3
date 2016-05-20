@@ -55,14 +55,14 @@ import org.demoiselle.util.Reflections;
 import org.demoiselle.util.ResourceBundle;
 import org.demoiselle.util.Strings;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.CDI;
+import javax.inject.Named;
 import javax.validation.*;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import static org.demoiselle.configuration.ConfigType.SYSTEM;
@@ -74,6 +74,8 @@ import static org.demoiselle.configuration.ConfigType.SYSTEM;
  *
  * @author SERPRO
  */
+@ApplicationScoped
+@Named("demoiselle-configuration-loader")
 public class ConfigurationLoader implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -94,11 +96,40 @@ public class ConfigurationLoader implements Serializable {
 
 	private Collection<Field> fields;
 
-	public void load(Object object) throws ConfigurationException {
-		load(object, true);
+	private final Object lock = new Object();
+
+	private final Map<Object, Boolean> loadedCache = new ConcurrentHashMap<>();
+
+	public void load(final Object object) throws ConfigurationException {
+		Boolean isLoaded = loadedCache.get(object);
+
+		if (isLoaded == null || !isLoaded) {
+			try {
+				loadConfiguration(object, true);
+				loadedCache.put(object, true);
+			} catch (ConfigurationException c) {
+				loadedCache.put(object, false);
+				throw c;
+			}
+		}
 	}
 
-	public void load(Object object, boolean logLoadingProcess) throws ConfigurationException {
+	public void load(final Object object, boolean logLoadingProcess) throws ConfigurationException {
+		Boolean isLoaded = loadedCache.get(object);
+
+		if (isLoaded == null || !isLoaded) {
+			try {
+				loadConfiguration(object, logLoadingProcess);
+				loadedCache.put(object, true);
+			} catch (ConfigurationException c) {
+				loadedCache.put(object, false);
+				throw c;
+			}
+		}
+	}
+
+	private synchronized void loadConfiguration(final Object object, boolean logLoadingProcess)
+			throws ConfigurationException {
 		if (logLoadingProcess) {
 			getLogger().fine(getBundle().getString("loading-configuration-class", object.getClass().getName()));
 		}
@@ -324,7 +355,8 @@ public class ConfigurationLoader implements Serializable {
 
 	private Logger getLogger() {
 		if (logger == null) {
-			logger = CDI.current().select(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.configuration")).get();
+			logger = CDI.current().select(Logger.class, new NameQualifier("br.gov.frameworkdemoiselle.configuration"))
+					.get();
 		}
 
 		return logger;

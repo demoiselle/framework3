@@ -37,7 +37,6 @@
 package org.demoiselle.jpa.template;
 
 import org.demoiselle.pagination.Pagination;
-import org.demoiselle.pagination.PaginationContext;
 import org.demoiselle.template.DatabaseAccess;
 import org.demoiselle.util.Reflections;
 
@@ -51,7 +50,6 @@ import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.SingularAttribute;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,13 +58,12 @@ import java.util.List;
  *
  * @see DatabaseAccess
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 
 	private static final long serialVersionUID = -6304662620826264383L;
 
 	private Class<T> beanClass;
-
-	private transient Pagination pagination;
 
 	protected abstract EntityManager getEntityManager();
 
@@ -159,7 +156,7 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 		TypedQuery<T> listQuery = getEntityManager().createQuery(criteria.where(typeRoot.get(idAttribute).in(ids)));
 
 		Pagination pagination = getPagination();
-		if (pagination != null) {
+		if (pagination != null && pagination.isInitialized()) {
 			listQuery.setFirstResult(pagination.getFirstResult());
 			listQuery.setMaxResults(pagination.getPageSize());
 		}
@@ -188,7 +185,7 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 		TypedQuery<T> listQuery = getEntityManager().createQuery(criteria.where(typeRoot.get(idAttribute).in(ids)));
 
 		Pagination pagination = getPagination();
-		if (pagination != null) {
+		if (pagination != null && pagination.isInitialized()) {
 			listQuery.setFirstResult(pagination.getFirstResult());
 			listQuery.setMaxResults(pagination.getPageSize());
 		}
@@ -206,7 +203,9 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 		TypedQuery<T> query = getEntityManager().createQuery( criteriaQuery );
 
 		Pagination pagination = getPagination();
-		if (pagination != null) {
+		if (pagination != null && pagination.isInitialized()) {
+			pagination.setTotalResults(this.countAll().intValue());
+
 			query.setFirstResult(pagination.getFirstResult());
 			query.setMaxResults(pagination.getPageSize());
 		}
@@ -214,16 +213,32 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 		return query.getResultList();
 	}
 
+	/**
+	 * <p>
+	 * Returns a valid pagination object to control the listing
+	 * of instances of the entity controlled by this class.
+	 * </p>
+	 *
+	 * <p>
+	 * The default implementation always return <code>null</code>. If
+	 * you want to paginate results returned by the methods {@link #loadList(I[])},
+	 * {@link #loadList(List<I>)} and {@link #listAll()} then overwrite this method
+	 * and return a valid pagination object.
+	 * </p>
+	 *
+	 * @return Pagination object to control the pagination of results for this
+	 * class, or <code>null</code> if no pagination should occurr.
+	 */
 	protected Pagination getPagination() {
-		if (pagination == null) {
-			try {
-				PaginationContext context = CDI.current().select(PaginationContext.class).get();
-				pagination = context.getPagination(getBeanClass());
-			} catch (ContextNotActiveException cause) {
-				pagination = null;
-			}
-		}
+		return null;
+	}
 
-		return pagination;
+	@SuppressWarnings("WeakerAccess")
+	protected Number countAll() {
+		CriteriaBuilder qb = getEntityManager().getCriteriaBuilder();
+		CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+		cq.select(qb.count(cq.from(getBeanClass())));
+
+		return getEntityManager().createQuery(cq).getSingleResult();
 	}
 }

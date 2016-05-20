@@ -40,6 +40,7 @@ import org.demoiselle.annotation.Name;
 import org.demoiselle.util.CDIUtils;
 import org.demoiselle.util.ResourceBundle;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.CDI;
@@ -53,6 +54,7 @@ import java.util.Locale;
  *
  * @author SERPRO
  */
+@Dependent
 public class ResourceBundleProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -64,7 +66,7 @@ public class ResourceBundleProducer implements Serializable {
 	}
 
 	/**
-	 * Produces a ResourceBundle instance loading the properties file whose name
+	 * Produces a {@link java.util.ResourceBundle} instance loading the properties file whose name
 	 * is defined by the {@link Name} literal. If no value is specified
 	 * then the default "messages.properties" file is loaded.
 	 */

@@ -37,7 +37,6 @@
 package org.demoiselle.jsf.template;
 
 import org.demoiselle.pagination.Pagination;
-import org.demoiselle.pagination.PaginationContext;
 import org.demoiselle.util.Reflections;
 
 import javax.faces.model.CollectionDataModel;
@@ -74,9 +73,6 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 
 	private Class<T> beanClass;
 
-	@Inject
-	private PaginationContext paginationContext;
-
 	@SuppressWarnings("WeakerAccess")
 	public void clear() {
 		this.dataModel = null;
@@ -112,9 +108,8 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 	protected abstract Collection<T> handleResultList();
 
 	@Override
-	public String list() {
+	public void list() {
 		clear();
-		return getCurrentView();
 	}
 
 	public Map<I, Boolean> getSelection() {
@@ -137,8 +132,4 @@ public abstract class AbstractListPageBean<T, I> extends AbstractPageBean implem
 				.collect(Collectors.toList());
 	}
 
-	@SuppressWarnings("unused")
-	public Pagination getPagination() {
-		return paginationContext.getPagination(getBeanClass(), true);
-	}
 }

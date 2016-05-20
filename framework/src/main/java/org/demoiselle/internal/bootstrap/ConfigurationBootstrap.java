@@ -39,6 +39,7 @@ package org.demoiselle.internal.bootstrap;
 import javassist.*;
 import org.demoiselle.configuration.Configuration;
 import org.demoiselle.configuration.ConfigurationValueExtractor;
+import org.demoiselle.exception.DemoiselleException;
 import org.demoiselle.internal.implementation.ConfigurationProxyTemplateImpl;
 import org.demoiselle.internal.producer.LoggerProducer;
 import org.demoiselle.internal.producer.ResourceBundleProducer;
@@ -60,13 +61,64 @@ public class ConfigurationBootstrap extends AbstractStrategyBootstrap<Configurat
 	private static final Map<ClassLoader, Map<String, Class<Object>>> cacheClassLoader = Collections
 			.synchronizedMap(new HashMap<>());
 
-	public void processAnnotatedType(@Observes @WithAnnotations(Configuration.class) final ProcessAnnotatedType<Object> event, BeanManager beanManager)
-			throws Exception {
-		final AnnotatedType<Object> annotatedType = event.getAnnotatedType();
+	@Override
+	public <T> void processAnnotatedType(@Observes @WithAnnotations(Configuration.class) final ProcessAnnotatedType<T> event, BeanManager beanManager) {
+		final AnnotatedType<T> annotatedType = event.getAnnotatedType();
 
-		Class<Object> proxyClass = createProxy(annotatedType.getJavaClass());
-		AnnotatedType<Object> proxyAnnotatedType = beanManager.createAnnotatedType(proxyClass);
+		Class<T> proxyClass = createProxy(annotatedType.getJavaClass());
+		AnnotatedType<T> proxyAnnotatedType = beanManager.createAnnotatedType(proxyClass);
 		event.setAnnotatedType(proxyAnnotatedType);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> Class<T> createProxy(Class<T> type) {
+		String superClassName = type.getCanonicalName();
+		String childClassName = superClassName + "_$$_DemoiselleProxy";
+
+		Map<String, Class<Object>> cacheProxy = Collections.synchronizedMap(new HashMap<>());
+
+		Class<T> clazzProxy = null;
+
+		ClassLoader classLoader = type.getClassLoader();
+		if (cacheClassLoader.containsKey(classLoader)) {
+			cacheProxy = cacheClassLoader.get(classLoader);
+			if (cacheProxy.containsKey(childClassName)) {
+				clazzProxy = (Class<T>) cacheProxy.get(childClassName);
+			}
+		}
+
+		try {
+			if (clazzProxy == null) {
+
+				ClassPool pool = new ClassPool();
+				CtClass ctChildClass;
+
+				pool.appendClassPath(new LoaderClassPath(classLoader));
+				CtClass ctSuperClass = pool.get(superClassName);
+
+				ctChildClass = pool.getAndRename(ConfigurationProxyTemplateImpl.class.getCanonicalName(), childClassName);
+				ctChildClass.setSuperclass(ctSuperClass);
+
+				CtMethod ctChildMethod;
+				for (CtMethod ctSuperMethod : getMethods(ctSuperClass)) {
+					ctChildMethod = CtNewMethod.delegator(ctSuperMethod, ctChildClass);
+					ctChildMethod.insertBefore("load(this);");
+
+					ctChildClass.addMethod(ctChildMethod);
+				}
+
+				clazzProxy = ctChildClass.toClass(classLoader, type.getProtectionDomain());
+
+				cacheProxy.put(childClassName, (Class<Object>) clazzProxy);
+				cacheClassLoader.put(classLoader, cacheProxy);
+			}
+		}
+		catch (Exception e) {
+			//TODO Colocar mensagem em bundle
+			throw new DemoiselleException("Error creating configuration object for class ["+type.getSimpleName()+"]", e);
+		}
+
+		return clazzProxy;
 	}
 
 	private static List<CtMethod> getMethods(CtClass type) throws NotFoundException {
@@ -78,51 +130,6 @@ public class ConfigurationBootstrap extends AbstractStrategyBootstrap<Configurat
 		}
 
 		return fields;
-	}
-
-	@SuppressWarnings("unchecked")
-	private Class<Object> createProxy(Class<Object> type) throws Exception {
-		String superClassName = type.getCanonicalName();
-		String childClassName = superClassName + "_$$_DemoiselleProxy";
-
-		Map<String, Class<Object>> cacheProxy = Collections.synchronizedMap(new HashMap<>());
-
-		Class<Object> clazzProxy = null;
-
-		ClassLoader classLoader = type.getClassLoader();
-		if (cacheClassLoader.containsKey(classLoader)) {
-			cacheProxy = cacheClassLoader.get(classLoader);
-			if (cacheProxy.containsKey(childClassName)) {
-				clazzProxy = cacheProxy.get(childClassName);
-			}
-		}
-
-		if (clazzProxy == null) {
-
-			ClassPool pool = new ClassPool();
-			CtClass ctChildClass;
-
-			pool.appendClassPath(new LoaderClassPath(classLoader));
-			CtClass ctSuperClass = pool.get(superClassName);
-
-			ctChildClass = pool.getAndRename(ConfigurationProxyTemplateImpl.class.getCanonicalName(), childClassName);
-			ctChildClass.setSuperclass(ctSuperClass);
-
-			CtMethod ctChildMethod;
-			for (CtMethod ctSuperMethod : getMethods(ctSuperClass)) {
-				ctChildMethod = CtNewMethod.delegator(ctSuperMethod, ctChildClass);
-				ctChildMethod.insertBefore("load(this);");
-
-				ctChildClass.addMethod(ctChildMethod);
-			}
-
-			clazzProxy = ctChildClass.toClass(classLoader, type.getProtectionDomain());
-
-			cacheProxy.put(childClassName, clazzProxy);
-			cacheClassLoader.put(classLoader, cacheProxy);
-		}
-
-		return clazzProxy;
 	}
 
 	@Override

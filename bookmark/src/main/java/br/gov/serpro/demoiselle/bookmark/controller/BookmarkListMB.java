@@ -2,17 +2,21 @@ package br.gov.serpro.demoiselle.bookmark.controller;
 
 import br.gov.serpro.demoiselle.bookmark.business.BookmarkBC;
 import br.gov.serpro.demoiselle.bookmark.domain.Bookmark;
+import org.demoiselle.annotation.literal.TypeQualifier;
 import org.demoiselle.jsf.annotation.NextView;
 import org.demoiselle.jsf.annotation.PreviousView;
 import org.demoiselle.jsf.stereotype.ViewController;
 import org.demoiselle.jsf.template.AbstractListPageBean;
+import org.demoiselle.pagination.Pagination;
 
-import javax.annotation.PostConstruct;
+import javax.enterprise.inject.spi.CDI;
+import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * <p>Gives clients access to services for accessing and maintaining Bookmark instances.</p>
@@ -29,14 +33,12 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> impleme
 	@Inject
 	private BookmarkBC bookmarkBC;
 
-	@PostConstruct
-	protected void setPagination() {
-		getPagination().setTotalResults(bookmarkBC.countBookmarks());
-		getPagination().setPageSize(5);
-	}
+	@Inject
+	private Logger logger;
 
 	@Override
 	protected List<Bookmark> handleResultList() {
+		getBookmarkPagination().setCurrentPage(1);
 		return bookmarkBC.listAll();
 	}
 
@@ -56,15 +58,17 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> impleme
 		return getPreviousView();
 	}
 
-	public void setPage(int page) {
-		getPagination().setCurrentPage(page);
+	public void setPage(ActionEvent event) {
+		try {
+			Number pageNumber = (Number) event.getComponent().getAttributes().get("page");
+			getBookmarkPagination().setCurrentPage(pageNumber.intValue());
+		} catch (RuntimeException re) {
+			getBookmarkPagination().setCurrentPage(1);
+		}
 	}
 
-	public void previousPage() {
-		getPagination().previousPage();
+	public Pagination getBookmarkPagination() {
+		return CDI.current().select(Pagination.class, new TypeQualifier(Bookmark.class)).get();
 	}
 
-	public void nextPage() {
-		getPagination().nextPage();
-	}
 }

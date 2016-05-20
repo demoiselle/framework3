@@ -40,6 +40,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Stereotype;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Named;
+import javax.interceptor.InterceptorBinding;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -67,10 +68,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * @author SERPRO
  */
-@Named
-@Inherited
-@Stereotype
 @ApplicationScoped
+@InterceptorBinding
+@Inherited
 @Target(TYPE)
 @Retention(RUNTIME)
 public @interface Configuration {
@@ -91,8 +91,7 @@ public @interface Configuration {
 	 *
 	 * @return ConfigType Type of configuration resource file to look for
 	 */
-	//@Nonbinding
-	@SuppressWarnings("unused") ConfigType type() default ConfigType.PROPERTIES;
+	@Nonbinding @SuppressWarnings("unused") ConfigType type() default ConfigType.PROPERTIES;
 
 	/**
 	 * Defines an optional prefix to be used on every parameter key.
@@ -102,8 +101,7 @@ public @interface Configuration {
 	 *
 	 * @return String prefix common to all attributes to be read by the configuration class
 	 */
-	//@Nonbinding
-	@SuppressWarnings("unused") String prefix() default DEFAULT_PREFIX;
+	@Nonbinding @SuppressWarnings("unused") String prefix() default DEFAULT_PREFIX;
 
 	/**
 	 * Defines the resource file name to be read by this configuration class. There is no need to specify file extension
@@ -114,7 +112,6 @@ public @interface Configuration {
 	 *
 	 * @return String Name of the resource file to look for (minus file extension)
 	 */
-	//@Nonbinding
-	@SuppressWarnings("unused") String resource() default DEFAULT_RESOURCE;
+	@Nonbinding @SuppressWarnings("unused") String resource() default DEFAULT_RESOURCE;
 
 }

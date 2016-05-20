@@ -44,6 +44,7 @@ import org.demoiselle.internal.configuration.SecurityConfig;
 import org.demoiselle.security.*;
 import org.demoiselle.util.ResourceBundle;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -56,6 +57,7 @@ import java.security.Principal;
  *
  * @author SERPRO
  */
+@Dependent
 @Named("securityContext")
 public class SecurityContextImpl implements SecurityContext {
 
