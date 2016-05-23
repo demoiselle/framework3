@@ -213,15 +213,31 @@ public class PaginationImpl implements Serializable, Pagination {
 
 	@Override
 	public int[] getPages(final int pagesAfterCurrent, final int pagesBeforeCurrent) {
-		if (pagesAfterCurrent < 0 || pagesBeforeCurrent < 0) {
-			throw new IllegalArgumentException();
+		if (!initialized) {
+			throw new IllegalStateException(getBundle().getString("pagination-not-initialized"));
+		}
+
+		// Se pagesAfterCurrent tem mais páginas que as restantes entre a página
+		// atual e o total de páginas, reduzimos o número para conter apenas
+		// as páginas restantes.
+		int remainingPagesAfter = pagesAfterCurrent;
+		if (getTotalPages() > 0) {
+			if (getCurrentPage() + pagesAfterCurrent > getTotalPages()) {
+				remainingPagesAfter = getTotalPages() -  getCurrentPage();
+
+				if (remainingPagesAfter > 0) {
+					remainingPagesAfter = 0;
+				}
+			}
 		}
 
 		// Se pagesBeforeCurrent tem mais paginas que o possível (pagina atual é 2 e pagesBeforeCurrent=3 por exemplo)
 		// calculamos aqui um número válido para pagesBeforeCurrent
 		final int remainingPagesBefore =
 				pagesBeforeCurrent < getCurrentPage() ? pagesBeforeCurrent : getCurrentPage() - 1;
-		final int[] pages = new int[1 + pagesAfterCurrent + remainingPagesBefore];
+
+		// Armazena a lista de páginas
+		final int[] pages = new int[1 + remainingPagesAfter + remainingPagesBefore];
 
 		int i = -1; // Se o IF abaixo não entrar, precisamos de i == -1 para
 		// que a chamada 'pages[++i]' abaixo resulte em i==0
@@ -234,8 +250,8 @@ public class PaginationImpl implements Serializable, Pagination {
 
 		pages[++i] = getCurrentPage();
 
-		if (pagesAfterCurrent > 0) {
-			for (i = remainingPagesBefore + 1; i < remainingPagesBefore + pagesAfterCurrent + 1; i++) {
+		if (remainingPagesAfter > 0) {
+			for (i = remainingPagesBefore + 1; i < remainingPagesBefore + remainingPagesAfter + 1; i++) {
 				pages[i] = i + 1;
 			}
 		}

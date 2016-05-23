@@ -43,6 +43,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.demoiselle.annotation.Priority;
 import org.demoiselle.configuration.ConfigurationValueExtractor;
 
+import javax.enterprise.context.Dependent;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
@@ -51,6 +52,7 @@ import static org.demoiselle.annotation.Priority.L2_PRIORITY;
 
 @SuppressWarnings("unused")
 @Priority(L2_PRIORITY)
+@Dependent
 public class ConfigurationPrimitiveOrWrapperValueExtractor implements ConfigurationValueExtractor {
 
 	private static final Set<Object> wrappers = new HashSet<Object>();

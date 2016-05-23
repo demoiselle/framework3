@@ -41,11 +41,14 @@ import org.demoiselle.annotation.Priority;
 import org.demoiselle.configuration.ConfigurationValueExtractor;
 import org.demoiselle.util.Reflections;
 
+import javax.enterprise.context.Dependent;
 import java.lang.reflect.Field;
 
 import static org.demoiselle.annotation.Priority.L2_PRIORITY;
 
+@SuppressWarnings("unused")
 @Priority(L2_PRIORITY)
+@Dependent
 public class ConfigurationClassValueExtractor implements ConfigurationValueExtractor {
 
 	@Override

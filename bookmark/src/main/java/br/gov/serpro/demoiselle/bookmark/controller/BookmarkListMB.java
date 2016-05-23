@@ -38,7 +38,7 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> impleme
 
 	@Override
 	protected List<Bookmark> handleResultList() {
-		getBookmarkPagination().setCurrentPage(1);
+		getBookmarkPagination();
 		return bookmarkBC.listAll();
 	}
 
@@ -68,7 +68,13 @@ public class BookmarkListMB extends AbstractListPageBean<Bookmark, Long> impleme
 	}
 
 	public Pagination getBookmarkPagination() {
-		return CDI.current().select(Pagination.class, new TypeQualifier(Bookmark.class)).get();
+		Pagination pagination = CDI.current().select(Pagination.class, new TypeQualifier(Bookmark.class)).get();
+
+		if (!pagination.isInitialized()) {
+			pagination.setCurrentPage(1);
+		}
+
+		return pagination;
 	}
 
 }

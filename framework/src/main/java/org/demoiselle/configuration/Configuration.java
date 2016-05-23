@@ -41,7 +41,6 @@ import javax.enterprise.inject.Stereotype;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Named;
 import javax.interceptor.InterceptorBinding;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -69,8 +68,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author SERPRO
  */
 @ApplicationScoped
+@Named
 @InterceptorBinding
-@Inherited
+@Stereotype
 @Target(TYPE)
 @Retention(RUNTIME)
 public @interface Configuration {

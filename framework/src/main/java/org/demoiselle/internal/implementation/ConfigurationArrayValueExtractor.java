@@ -41,11 +41,13 @@ import org.apache.commons.configuration2.DataConfiguration;
 import org.demoiselle.annotation.Priority;
 import org.demoiselle.configuration.ConfigurationValueExtractor;
 
+import javax.enterprise.context.Dependent;
 import java.lang.reflect.Field;
 
 import static org.demoiselle.annotation.Priority.L2_PRIORITY;
 
 @SuppressWarnings("unused")
+@Dependent
 @Priority(L2_PRIORITY)
 public class ConfigurationArrayValueExtractor implements ConfigurationValueExtractor {
 

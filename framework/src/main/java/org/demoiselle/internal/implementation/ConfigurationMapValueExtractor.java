@@ -42,6 +42,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.demoiselle.annotation.Priority;
 import org.demoiselle.configuration.ConfigurationValueExtractor;
 
+import javax.enterprise.context.Dependent;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,6 +54,7 @@ import static org.demoiselle.annotation.Priority.L2_PRIORITY;
 
 @SuppressWarnings("unused")
 @Priority(L2_PRIORITY)
+@Dependent
 public class ConfigurationMapValueExtractor implements ConfigurationValueExtractor {
 
 	@Override

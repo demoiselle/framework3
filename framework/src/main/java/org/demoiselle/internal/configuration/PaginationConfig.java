@@ -44,7 +44,7 @@ import java.io.Serializable;
 /**
  * The <code>PaginationConfig</code> class provides a pagination context to be used where this type of control is
  * needed. For example: in a UI as a data grid or on a search to the database.
- * 
+ *
  * @author SERPRO
  */
 @Configuration(prefix = "demoiselle.pagination")
@@ -60,9 +60,9 @@ public class PaginationConfig implements Serializable {
 
 	/**
 	 * Returns the number of rows that will be shown in a data grid.
-	 * 
+	 *
 	 * @return the value defined for the key <i>frameworkdemoiselle.pagination.page.size</i> in the
-	 *         <b>demoiselle.properties</b> file. If there is no value defined, returns the default value 10
+	 * <b>demoiselle.properties</b> file. If there is no value defined, returns the default value 10
 	 */
 	@SuppressWarnings("unused")
 	public int getPageSize() {
@@ -71,9 +71,9 @@ public class PaginationConfig implements Serializable {
 
 	/**
 	 * Returns the maximum number of pages to be shown as selectable options on the presentation layer.
-	 * 
+	 *
 	 * @return the value defined for the key <i>frameworkdemoiselle.pagination.page.maxlinks</i> in the
-	 *         <b>demoiselle.properties</b> file. If there is no value defined, returns the default value of 5.
+	 * <b>demoiselle.properties</b> file. If there is no value defined, returns the default value of 5.
 	 */
 	@SuppressWarnings("unused")
 	public int getMaxPageLinks() {

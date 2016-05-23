@@ -52,7 +52,7 @@ public class ConfigurationProxyTemplateImpl implements Serializable {
 
 	@SuppressWarnings("unused")
 	private void load(Object instance) throws Throwable {
-		synchronized (lock) {
+		/*synchronized (lock) {
 			if (!loaded) {
 				try {
 					CDI.current().select(ConfigurationLoader.class).get().load(instance);
@@ -62,6 +62,6 @@ public class ConfigurationProxyTemplateImpl implements Serializable {
 					throw cause;
 				}
 			}
-		}
+		}*/
 	}
 }

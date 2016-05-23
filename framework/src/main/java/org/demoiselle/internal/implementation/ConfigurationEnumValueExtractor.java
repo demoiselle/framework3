@@ -43,6 +43,7 @@ import org.demoiselle.annotation.literal.NamedQualifier;
 import org.demoiselle.configuration.ConfigurationValueExtractor;
 import org.demoiselle.util.ResourceBundle;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.CDI;
 import java.lang.reflect.Field;
 
@@ -50,6 +51,7 @@ import static org.demoiselle.annotation.Priority.L2_PRIORITY;
 
 @SuppressWarnings("unused")
 @Priority(L2_PRIORITY)
+@Dependent
 public class ConfigurationEnumValueExtractor implements ConfigurationValueExtractor {
 
 	private transient ResourceBundle bundle;

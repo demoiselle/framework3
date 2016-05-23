@@ -86,6 +86,8 @@ public class ConfigurationLoader implements Serializable {
 
 	private Object object;
 
+	private Class<?> baseClass;
+
 	private ConfigType type;
 
 	private String resource;
@@ -96,16 +98,16 @@ public class ConfigurationLoader implements Serializable {
 
 	private Collection<Field> fields;
 
-	private final Object lock = new Object();
-
 	private final Map<Object, Boolean> loadedCache = new ConcurrentHashMap<>();
 
-	public void load(final Object object) throws ConfigurationException {
+	private Collection<Class<?>> extractorCache;
+
+	public void load(final Object object, Class<?> baseClass) throws ConfigurationException {
 		Boolean isLoaded = loadedCache.get(object);
 
 		if (isLoaded == null || !isLoaded) {
 			try {
-				loadConfiguration(object, true);
+				loadConfiguration(object, baseClass, true);
 				loadedCache.put(object, true);
 			} catch (ConfigurationException c) {
 				loadedCache.put(object, false);
@@ -114,12 +116,12 @@ public class ConfigurationLoader implements Serializable {
 		}
 	}
 
-	public void load(final Object object, boolean logLoadingProcess) throws ConfigurationException {
+	public void load(final Object object, Class<?> baseClass, boolean logLoadingProcess) throws ConfigurationException {
 		Boolean isLoaded = loadedCache.get(object);
 
 		if (isLoaded == null || !isLoaded) {
 			try {
-				loadConfiguration(object, logLoadingProcess);
+				loadConfiguration(object, baseClass, logLoadingProcess);
 				loadedCache.put(object, true);
 			} catch (ConfigurationException c) {
 				loadedCache.put(object, false);
@@ -128,13 +130,14 @@ public class ConfigurationLoader implements Serializable {
 		}
 	}
 
-	private synchronized void loadConfiguration(final Object object, boolean logLoadingProcess)
+	private void loadConfiguration(final Object object, Class<?> baseClass, boolean logLoadingProcess)
 			throws ConfigurationException {
 		if (logLoadingProcess) {
-			getLogger().fine(getBundle().getString("loading-configuration-class", object.getClass().getName()));
+			getLogger().fine(getBundle().getString("loading-configuration-class", baseClass.getName()));
 		}
 
 		this.object = object;
+		this.baseClass = baseClass;
 
 		loadFields();
 		validateFields();
@@ -152,7 +155,7 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private void loadFields() {
-		this.fields = Reflections.getNonStaticFields(this.object.getClass());
+		this.fields = Reflections.getNonStaticFields(baseClass);
 	}
 
 	private void validateFields() {
@@ -169,12 +172,12 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private void loadType() {
-		this.type = object.getClass().getAnnotation(org.demoiselle.configuration.Configuration.class).type();
+		this.type = baseClass.getAnnotation(org.demoiselle.configuration.Configuration.class).type();
 	}
 
 	private void loadResource() {
 		if (this.type != SYSTEM) {
-			String name = this.object.getClass().getAnnotation(org.demoiselle.configuration.Configuration.class)
+			String name = baseClass.getAnnotation(org.demoiselle.configuration.Configuration.class)
 					.resource();
 			String extension = this.type.toString().toLowerCase();
 
@@ -223,7 +226,7 @@ public class ConfigurationLoader implements Serializable {
 	}
 
 	private void loadPrefix() {
-		String prefix = this.object.getClass().getAnnotation(org.demoiselle.configuration.Configuration.class).prefix();
+		String prefix = baseClass.getAnnotation(org.demoiselle.configuration.Configuration.class).prefix();
 
 		if (prefix.endsWith(".")) {
 			getLogger().warning(getBundle().getString("configuration-dot-after-prefix", this.resource));
@@ -343,6 +346,14 @@ public class ConfigurationLoader implements Serializable {
 
 			throw new ConfigurationException(message.toString(), new ConstraintViolationException(violations));
 		}
+	}
+
+	private Collection<Class<?>> getCache() {
+		if (this.extractorCache == null) {
+			this.extractorCache = Collections.synchronizedSet(new HashSet<>());
+		}
+
+		return this.extractorCache;
 	}
 
 	private ResourceBundle getBundle() {

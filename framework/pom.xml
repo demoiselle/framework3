@@ -29,11 +29,19 @@
 			<artifactId>commons-configuration2</artifactId>
 			<version>${commons.configuration.version}</version>
 		</dependency>
+
+		<!-- apache commons beanutils -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>${commons.beanutils.version}</version>
+		</dependency>
 	</dependencies>
 
 	<properties>
 		<!-- Dependencies versions -->
 		<commons.configuration.version>2.0</commons.configuration.version>
+		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 
 		<!-- Maven plugin versions -->
 		<maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
