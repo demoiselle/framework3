@@ -13,6 +13,7 @@
 		<module>parent</module>
 		<module>framework</module>
 		<module>bookmark</module>
+		<module>bookmark-rest</module>
 	</modules>
 
 	<build>
