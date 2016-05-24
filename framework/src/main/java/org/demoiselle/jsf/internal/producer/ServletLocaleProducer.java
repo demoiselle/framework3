@@ -37,6 +37,7 @@
 package org.demoiselle.jsf.internal.producer;
 
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
@@ -45,6 +46,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Locale;
 
+@Dependent
 public class ServletLocaleProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;

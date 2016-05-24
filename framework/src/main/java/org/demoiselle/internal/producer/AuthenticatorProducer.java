@@ -39,13 +39,15 @@ package org.demoiselle.internal.producer;
 import org.demoiselle.annotation.Strategy;
 import org.demoiselle.security.Authenticator;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 
+@Dependent
 public class AuthenticatorProducer {
 
-	@Produces
-	@Strategy
-	public Authenticator create() {
-		return StrategySelector.selectReference(Authenticator.class);
-	}
+    @Produces
+    @Strategy
+    public Authenticator create() {
+        return StrategySelector.selectReference(Authenticator.class);
+    }
 }
