@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <form jsf:id="form_main_menu">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bookmark_main_menu" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"/>
+                        <span class="icon-bar"/>
+                        <span class="icon-bar"/>
+                    </button>
+                    <a href="index.jsf" class="navbar-brand">
+                        <img jsf:library="default" jsf:name="images/logo.png" alt="#{messages['bookmark.label']}" width="20" height="20"/>
+                    </a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bookmark_main_menu">
+                    <ul class="nav navbar-nav">
+                        <li><a href="bookmark_edit.jsf">#{messages['menu.menuitem.new']}</a></li>
+                        <li><a href="bookmark_list.jsf">#{messages['menu.menuitem.list']}</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false">
+                               #{messages['label.user']} <span class="caret"/>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="login.jsf">#{messages['menu.menuitem.login']}</a></li>
+                                <li><a href="#" jsf:action="#{securityContext.logout}">#{messages['menu.menuitem.quit']}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" jsf:action="#{locales.setCurrentLocale('pt')}">
+                                <img jsf:library="default" jsf:name="images/locale_pt.png" alt="#{messages['menu.menuitem.language-portuguese']}"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" jsf:action="#{locales.setCurrentLocale('en')}">
+                                <img jsf:library="default" jsf:name="images/locale_en.png" alt="#{messages['menu.menuitem.language-english']}"/>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </form>
+</ui:composition>
+

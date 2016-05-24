@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<head jsf:id="bookmark_document_head">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <h:outputStylesheet library="default" name="css/bootstrap.css"/>
+    <h:outputStylesheet library="default" name="css/bootstrap-theme.min.css"/>
+
+    <title>#{messages['bookmark.label']}</title>
+</head>
+
+<body jsf:title="bookmark_document_body" style="padding-top: 70px;">
+
+<ui:include src="/menu.xhtml"/>
+
+<div class="container" role="main">
+    <ui:insert name="body"/>
+</div>
+
+<h:outputScript library="default" name="js/jquery-1.12.3.min.js"/>
+<h:outputScript library="default" name="js/bootstrap.min.js"/>
+
+<ui:insert name="script"/>
+
+</body>
+
+</html>
