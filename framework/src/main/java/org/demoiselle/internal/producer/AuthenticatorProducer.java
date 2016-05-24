@@ -39,8 +39,10 @@ package org.demoiselle.internal.producer;
 import org.demoiselle.annotation.Strategy;
 import org.demoiselle.security.Authenticator;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 
+@Dependent
 public class AuthenticatorProducer {
 
 	@Produces
