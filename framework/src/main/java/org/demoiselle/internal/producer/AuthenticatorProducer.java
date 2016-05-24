@@ -45,9 +45,9 @@ import javax.enterprise.inject.Produces;
 @Dependent
 public class AuthenticatorProducer {
 
-	@Produces
-	@Strategy
-	public Authenticator create() {
-		return StrategySelector.selectReference(Authenticator.class);
-	}
+    @Produces
+    @Strategy
+    public Authenticator create() {
+        return StrategySelector.selectReference(Authenticator.class);
+    }
 }

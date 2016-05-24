@@ -39,13 +39,15 @@ package org.demoiselle.internal.producer;
 import org.demoiselle.annotation.Strategy;
 import org.demoiselle.security.Authorizer;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 
+@Dependent
 public class AuthorizerProducer {
 
-	@Produces
-	@Strategy
-	public Authorizer create() {
-		return StrategySelector.selectReference(Authorizer.class);
-	}
+    @Produces
+    @Strategy
+    public Authorizer create() {
+        return StrategySelector.selectReference(Authorizer.class);
+    }
 }
