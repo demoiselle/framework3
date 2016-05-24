@@ -225,7 +225,7 @@ public class PaginationImpl implements Serializable, Pagination {
 			if (getCurrentPage() + pagesAfterCurrent > getTotalPages()) {
 				remainingPagesAfter = getTotalPages() -  getCurrentPage();
 
-				if (remainingPagesAfter > 0) {
+				if (remainingPagesAfter < 0) {
 					remainingPagesAfter = 0;
 				}
 			}
@@ -239,16 +239,14 @@ public class PaginationImpl implements Serializable, Pagination {
 		// Armazena a lista de páginas
 		final int[] pages = new int[1 + remainingPagesAfter + remainingPagesBefore];
 
-		int i = -1; // Se o IF abaixo não entrar, precisamos de i == -1 para
-		// que a chamada 'pages[++i]' abaixo resulte em i==0
-
+		int i = 0;
 		if (remainingPagesBefore > 0) {
-			for (i = 0; i < remainingPagesBefore; i++) {
+            for (i = 0; i < remainingPagesBefore; i++) {
 				pages[i] = getCurrentPage() - (remainingPagesBefore - i);
 			}
 		}
 
-		pages[++i] = getCurrentPage();
+		pages[i] = getCurrentPage();
 
 		if (remainingPagesAfter > 0) {
 			for (i = remainingPagesBefore + 1; i < remainingPagesBefore + remainingPagesAfter + 1; i++) {

@@ -86,6 +86,7 @@
                         <ul class="pagination">
                             <li>
                                 <a aria-label="Previous"
+                                   jsf:id="page_previous"
                                    jsf:action="#{bookmarkListMB.list}"
                                    jsf:actionListener="#{bookmarkListMB.setPage}"
                                    jsf:rendered="#{!bookmarkListMB.bookmarkPagination.firstPage}">
@@ -109,6 +110,7 @@
 
                             <li>
                                 <a aria-label="Next"
+                                   jsf:id="page_next"
                                    jsf:action="#{bookmarkListMB.list}"
                                    jsf:actionListener="#{bookmarkListMB.setPage}"
                                    jsf:rendered="#{!bookmarkListMB.bookmarkPagination.lastPage}">
