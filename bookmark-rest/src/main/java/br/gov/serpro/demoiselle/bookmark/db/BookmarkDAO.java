@@ -8,9 +8,13 @@ import org.demoiselle.stereotype.PersistenceController;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 /**
+ * <p>
  * Gives access to {@link Bookmark} instances stored in the database.
+ *</p>
  *
  * @author SERPRO
  */
@@ -26,5 +30,18 @@ public class BookmarkDAO extends ContainerManagedJPADatabaseAccess<Bookmark, Lon
 	@Override
 	protected Pagination getPagination() {
 		return bookmarkPagination.get();
+	}
+
+	public List<Bookmark> find(String filter){
+		StringBuffer ql = new StringBuffer();
+		ql.append("  from Bookmark b ");
+		ql.append(" where lower(b.description) like :description ");
+		ql.append("    or lower(b.link) like :link ");
+
+		TypedQuery<Bookmark> query = getEntityManager().createQuery(ql.toString(), Bookmark.class);
+		query.setParameter("description", "%" + filter.toLowerCase() + "%");
+		query.setParameter("link", "%" + filter.toLowerCase() + "%");
+
+		return query.getResultList();
 	}
 }
