@@ -30,6 +30,13 @@
 			<version>${commons.configuration.version}</version>
 		</dependency>
 
+		<!--apache commons codec (servlet) -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
+
 		<!-- apache commons beanutils -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
