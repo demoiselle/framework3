@@ -34,59 +34,21 @@
  * ou escreva para a Fundação do Software Livre (FSF) Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02111-1301, USA.
  */
-package org.demoiselle.rest.internal.implementation;
+package org.demoiselle.rest;
 
-import org.demoiselle.annotation.Priority;
-import org.demoiselle.rest.security.TokenManager;
+import org.demoiselle.rest.HttpViolationException;
 
-import javax.enterprise.context.ApplicationScoped;
-import java.io.Serializable;
-import java.security.Principal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 /**
  * @author SERPRO
  */
-@ApplicationScoped
-@Priority(Priority.L2_PRIORITY)
-public class DefaultTokenManager implements TokenManager {
+public class NotFoundException extends HttpViolationException {
 
-    private TokenStore store = new TokenStore();
+    private static final long serialVersionUID = 1L;
 
-    @Override
-    public String persist(Principal user) throws Exception {
-        return store.put(user);
-    }
-
-    @Override
-    public Principal load(String token) throws Exception {
-        return store.get(token);
-    }
-
-    public static class TokenStore implements Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        private Map<String, Principal> map = Collections.synchronizedMap(new HashMap<String, Principal>());
-
-        public String put(Principal user) {
-            String token = UUID.randomUUID().toString();
-
-            if (map.containsValue(user)) {
-                map.remove(token);
-            }
-
-            map.put(token, user);
-
-            return token;
-        }
-
-        public Principal get(String token) {
-            return map.get(token);
-        }
+    public NotFoundException() {
+        super(SC_NOT_FOUND);
     }
 }
 
