@@ -56,6 +56,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 @Dependent

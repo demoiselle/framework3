@@ -36,145 +36,156 @@
  */
 package org.demoiselle.jsf.internal.implementation;
 
+import org.apache.commons.beanutils.ConvertUtilsBean;
+import org.apache.commons.beanutils.Converter;
 import org.demoiselle.annotation.Name;
+import org.demoiselle.annotation.literal.NameQualifier;
+import org.demoiselle.exception.DemoiselleException;
 import org.demoiselle.jsf.util.Parameter;
 import org.demoiselle.util.Reflections;
-import org.demoiselle.util.Strings;
+import org.demoiselle.util.ResourceBundle;
 
+import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.spi.Annotated;
+import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.faces.application.Application;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
-import java.util.Map;
+import java.lang.annotation.Annotation;
 
-@Alternative
 public class ParameterImpl<T extends Serializable> implements Parameter<T>, Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Class<Object> type;
+    private T value;
 
-	private transient Converter converter;
+    private final String key;
 
-	private T value;
+    private boolean sessionScoped = false;
 
-	private final String key;
+    private boolean requestScoped = false;
 
-	private boolean viewScoped = false;
+    private boolean scoped = false;
 
-	private boolean requestScoped = false;
+    private Annotated annotatedInjectionPoint;
 
-	private boolean sessionScoped = false;
+    private Class<T> type;
 
-	public Converter getConverter() {
-		if (converter == null) {
-			converter = getConverter(type);
-		}
+    private final ConvertUtilsBean converter = new ConvertUtilsBean();
 
-		return converter;
-	}
+    private HttpServletRequest getRequest() {
+        return CDI.current().select(HttpServletRequest.class).get();
+    }
 
-	private HttpServletRequest getRequest() {
-		return (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-	}
+    public ParameterImpl(InjectionPoint ip) {
+        if (ip.getAnnotated().isAnnotationPresent(Name.class)) {
+            String key = ip.getAnnotated().getAnnotation(Name.class).value();
 
-	@Inject
-	public ParameterImpl(InjectionPoint ip) {
-		if (ip.getAnnotated().isAnnotationPresent(Name.class)) {
-			String key = ip.getAnnotated().getAnnotation(Name.class).value();
+            if (!"".equals(key)) {
+                this.key = key;
+            } else {
+                this.key = ip.getMember().getName();
+            }
+        } else {
+            this.key = ip.getMember().getName();
+        }
 
-			if (!"".equals(key)) {
-				this.key = key;
-			} else {
-				this.key = ip.getMember().getName();
-			}
-		} else {
-			this.key = ip.getMember().getName();
-		}
+        this.type = Reflections.getGenericTypeArgument(ip.getMember(), 0);
+        this.sessionScoped = ip.getAnnotated().isAnnotationPresent(SessionScoped.class);
+        this.scoped = ip.getAnnotated().isAnnotationPresent(NormalScope.class);
 
-		this.type = Reflections.getGenericTypeArgument(ip.getMember(), 0);
+        // O padrão de parâmetros é ser RequestScoped, então a ausência de escopos na injeção
+        // indica que o escopo é Request
+        this.requestScoped = ip.getAnnotated().isAnnotationPresent(RequestScoped.class) || !scoped;
 
-		this.viewScoped = ip.getAnnotated().isAnnotationPresent(ViewScoped.class);
-		this.requestScoped = ip.getAnnotated().isAnnotationPresent(RequestScoped.class);
-		this.sessionScoped = ip.getAnnotated().isAnnotationPresent(SessionScoped.class);
-	}
+        this.annotatedInjectionPoint = ip.getAnnotated();
+    }
 
-	public String getKey() {
-		return key;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	private boolean isSessionScoped() {
-		return sessionScoped;
-	}
+    private boolean isSessionScoped() {
+        return sessionScoped;
+    }
 
-	private boolean isViewScoped() {
-		return viewScoped;
-	}
+    private boolean isRequestScoped() {
+        return requestScoped;
+    }
 
-	private boolean isRequestScoped() {
-		return requestScoped;
-	}
+    private boolean isScoped() {
+        return scoped;
+    }
 
-	@SuppressWarnings("unchecked")
-	public T getValue() {
-		T result;
-		String parameterValue = getRequest().getParameter(key);
+    @SuppressWarnings("unchecked")
+    public T getValue() {
+        final String parameterValue = getRequest().getParameter(key);
 
-		if (isSessionScoped()) {
-			if (parameterValue != null) {
-				getRequest().getSession().setAttribute(key, convert(parameterValue, getConverter()));
-			}
+        if (isSessionScoped()) {
+            if (parameterValue != null) {
+                getRequest().getSession().setAttribute(key, convert(parameterValue, type));
+            }
 
-			result = (T) getRequest().getSession().getAttribute(key);
+            value = (T) getRequest().getSession().getAttribute(key);
 
-		} else if (isRequestScoped()) {
-			result = (T) convert(parameterValue, getConverter());
+        } else if (isScoped() && !isRequestScoped()) {
+            value = null;
+            for (Annotation annotation : annotatedInjectionPoint.getAnnotations()) {
+                if (annotation.annotationType().isAnnotationPresent(NormalScope.class)) {
+                    ScopedParameterValueHolder holder = CDI.current().select(ScopedParameterValueHolder.class, annotation).get();
 
-		} else if (isViewScoped()) {
-			Map<String, Object> viewMap = getViewMap();
-			if (parameterValue != null) {
-				viewMap.put(key, convert(parameterValue, getConverter()));
-			}
+                    if (parameterValue != null) {
+                        holder.setValue(convert(parameterValue, type));
+                    }
 
-			result = (T) viewMap.get(key);
+                    value = (T) holder.getValue();
 
-		} else {
-			if (value == null) {
-				value = (T) convert(parameterValue, getConverter());
-			}
+                    break;
+                }
+            }
+        } else {
+            value = convert(parameterValue, type);
+        }
 
-			result = value;
-		}
+        return value;
+    }
 
-		return result;
-	}
+    @Override
+    public void setValue(T value) {
+        if (isSessionScoped()) {
+            getRequest().getSession().setAttribute(key, value);
+        } else if (isRequestScoped()) {
+            throw new DemoiselleException(getBundle().getString("parameter-invalid-request-operation"));
+        }
+        //TODO Terminar implementação
 
-	@Override
-	public void setValue(T value) {
-		if (isSessionScoped()) {
-			getRequest().getSession().setAttribute(key, value);
+        //else if
 
-		} else if (isRequestScoped()) {
-			// FIXME Lançar exceção informando que não é possível setar parâmetros no request.
-		} else if (isViewScoped()) {
+        /*else if (isViewScoped()) {
 			Map<String, Object> viewMap = getViewMap();
 			viewMap.put(key, value);
 
 		} else {
 			this.value = value;
-		}
-	}
+		}*/
 
-	private Converter getConverter(Class<?> targetClass) {
+        // Se o escopo desse bean for View ou Dependent, armazenamos o valor no próprio bean
+        this.value = value;
+    }
+
+    @SuppressWarnings("unchecked")
+    private T convert(final String parameterValue, Class<T> targetClass) {
+        Converter typeConverter = converter.lookup(String.class, targetClass);
+        if (typeConverter != null) {
+            return (T) converter.convert(parameterValue, targetClass);
+        } else {
+            throw new DemoiselleException(getBundle().getString("parameter-converter-not-found", targetClass.getCanonicalName()));
+        }
+    }
+
+	/*private Converter getConverter(Class<?> targetClass) {
 		Converter result;
 
 		try {
@@ -202,10 +213,30 @@ public class ParameterImpl<T extends Serializable> implements Parameter<T>, Seri
 		}
 
 		return result;
-	}
+	}*/
 
-	private static Map<String, Object> getViewMap() {
+	/*private static Map<String, Object> getViewMap() {
 		UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
 		return viewRoot.getViewMap(true);
-	}
+	}*/
+
+    private ResourceBundle getBundle() {
+        return CDI.current().select(ResourceBundle.class, new NameQualifier("demoiselle-servlet-bundle.properties")).get();
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    class ScopedParameterValueHolder implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private Object value;
+
+        public Object getValue() {
+            return value;
+        }
+
+        public void setValue(Object value) {
+            this.value = value;
+        }
+    }
 }
