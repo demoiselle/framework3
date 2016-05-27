@@ -1,28 +1,42 @@
 package br.gov.serpro.demoiselle.bookmark.domain;
 
+import static javax.persistence.GenerationType.SEQUENCE;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
+ * <p>
  * Entity responsible for keeping bookmark information.
+ *</p>
  *
  * @author SERPRO
  */
 @Entity
-public class Bookmark implements Serializable, Comparable<Bookmark> {
+public class Bookmark implements Serializable {
 
-	private static final long serialVersionUID = -2804250741725999566L;
+	private static final long serialVersionUID = 1L;
 
+	/*
+	 * If you are using Glassfish then remove the strategy attribute
+	 */
+	@Id
+	@GeneratedValue(strategy = SEQUENCE)
 	private Long id;
 
+	@NotNull
+	@Size(min = 1, message = "{required.field}")
 	private String description;
 
+	@NotNull
+	@Size(min = 1, message = "{required.field}")
+	@Pattern(regexp = "^|([a-zA-Z]+://)(\\w+\\.\\w+)(.+)?$", message = "{invalid.url}")
 	private String link;
 
 	public Bookmark() {
-		this(null, null);
 	}
 
 	public Bookmark(String description, String link) {
@@ -30,9 +44,6 @@ public class Bookmark implements Serializable, Comparable<Bookmark> {
 		this.link = link;
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_bookmark")
-	@SequenceGenerator(name = "seq_bookmark", allocationSize = 1, sequenceName = "seq_bookmark")
 	public Long getId() {
 		return id;
 	}
@@ -41,7 +52,6 @@ public class Bookmark implements Serializable, Comparable<Bookmark> {
 		this.id = id;
 	}
 
-	@NotNull
 	public String getDescription() {
 		return description;
 	}
@@ -50,8 +60,6 @@ public class Bookmark implements Serializable, Comparable<Bookmark> {
 		this.description = description;
 	}
 
-	@NotNull
-	@Pattern(regexp = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]")
 	public String getLink() {
 		return link;
 	}
@@ -61,29 +69,27 @@ public class Bookmark implements Serializable, Comparable<Bookmark> {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-
-		Bookmark bookmark = (Bookmark) o;
-
-		if (!getDescription().equals(bookmark.getDescription()))
-			return false;
-		return getLink().equals(bookmark.getLink());
-
-	}
-
-	@Override
 	public int hashCode() {
-		int result = getDescription().hashCode();
-		result = 31 * result + getLink().hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
 	@Override
-	public int compareTo(Bookmark o) {
-		return 0;
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Bookmark other = (Bookmark) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 }

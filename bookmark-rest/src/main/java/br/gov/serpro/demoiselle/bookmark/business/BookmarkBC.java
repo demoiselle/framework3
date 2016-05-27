@@ -6,6 +6,7 @@ import org.demoiselle.stereotype.BusinessController;
 import org.demoiselle.template.DatabaseDelegator;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * <p>Contains business logic to persist and maintain bookmarks.</p>
@@ -36,5 +37,9 @@ public class BookmarkBC extends DatabaseDelegator<Bookmark, Long, BookmarkDAO> {
 			persist(new Bookmark("Maven", "http://repository.frameworkdemoiselle.gov.br"));
 			persist(new Bookmark("Downloads", "http://download.frameworkdemoiselle.gov.br"));
 		}
+	}
+
+	public List<Bookmark> find(String filter) {
+		return getDelegate().find(filter);
 	}
 }

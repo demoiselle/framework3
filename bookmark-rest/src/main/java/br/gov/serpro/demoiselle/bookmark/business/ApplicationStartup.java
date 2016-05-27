@@ -12,6 +12,8 @@ import javax.inject.Inject;
  * <p>
  * Initializes the Bookmark application
  * </p>
+ *
+ * @author SERPRO
  */
 @Startup
 @Singleton

@@ -75,6 +75,15 @@
 			<scope>provided</scope>
 			<version>${hibernate.version}</version>
 		</dependency>
+
+		<!-- jsr-339 api -->
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<scope>provided</scope>
+			<version>${jaxrs.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<properties>
@@ -93,6 +102,7 @@
 		<hibernate.version>5.1.0.Final</hibernate.version>
 		<hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
 		<commons.configuration.version>2.0</commons.configuration.version>
+		<jaxrs.version>2.0.1</jaxrs.version>
 
 		<!-- Maven plugin versions -->
 		<maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
