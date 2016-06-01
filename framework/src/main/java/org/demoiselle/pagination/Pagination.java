@@ -49,7 +49,10 @@ import java.util.List;
  * that fit a certain criteria (a <i>query</i>).
  * An user can navigate through pages by calling {@link #setCurrentPage(int)},
  * which will in turn load the next batch of '{@link #getPageSize()}' results
- * from the full collection.
+ * from the full collection. Optionally the user can define a value for the
+ * <code><b>demoiselle.pagination.page.requestparameter</b></code> configuration
+ * on the <i>demoiselle.properties</i> file and define a request parameter with the defined
+ * name and a value corresponding to the current page.
  * </p>
  * <p>
  * Classes responsible for loading entities from persistence can optionally define
@@ -146,6 +149,11 @@ import java.util.List;
  *
  * [Previous Page][10][11][12][13][14][Next Page]
  *
+ * <code><b>demoiselle.pagination.page.requestparameter</b></code>: Name of a request parameter to be read that will set the
+ * current page if present on the current request. If this configuration parameter is defined the user can send a request
+ * parameter with that name and a value that can be converted to {@link Integer}. If this is done then any pagination
+ * objects injected on that request will automatically have the {@link #setCurrentPage(int)} method called passing
+ * that value as argument.
  *
  * </pre>
  * </p>

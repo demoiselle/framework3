@@ -39,6 +39,7 @@ package org.demoiselle.security;
 import org.demoiselle.annotation.literal.NameQualifier;
 import org.demoiselle.util.ResourceBundle;
 
+import javax.annotation.Priority;
 import javax.enterprise.inject.spi.CDI;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -56,8 +57,9 @@ import java.util.logging.Logger;
  *
  * @author SERPRO
  */
-@Interceptor
 @RequiredRole(value = "")
+@Interceptor
+@Priority(Interceptor.Priority.APPLICATION)
 public class RequiredRoleInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;

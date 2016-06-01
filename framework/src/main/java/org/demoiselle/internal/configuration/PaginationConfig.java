@@ -58,6 +58,9 @@ public class PaginationConfig implements Serializable {
 	@Name("page.maxlinks")
 	private int maxPageLinks = 5;
 
+	@Name("page.requestparameter")
+	private String requestParameter = "pagination.page";
+
 	/**
 	 * Returns the number of rows that will be shown in a data grid.
 	 *
@@ -78,5 +81,17 @@ public class PaginationConfig implements Serializable {
 	@SuppressWarnings("unused")
 	public int getMaxPageLinks() {
 		return maxPageLinks;
+	}
+
+	/**
+	 * Returns the name of a request parameter that the user can set, doing that will cause any pagination
+	 * objects injected to have the {@link org.demoiselle.pagination.Pagination#setCurrentPage(int)} method
+	 * called with the defined value as argument for that request.
+	 *
+	 * @return Name of a request parameter to define the current page. Default value is "pagination.page".
+	 */
+	@SuppressWarnings("unused")
+	public String getRequestParameter() {
+		return requestParameter;
 	}
 }

@@ -7,10 +7,12 @@ import org.demoiselle.jsf.annotation.NextView;
 import org.demoiselle.jsf.annotation.PreviousView;
 import org.demoiselle.jsf.stereotype.ViewController;
 import org.demoiselle.jsf.template.AbstractListPageBean;
+import org.demoiselle.jsf.util.Parameter;
 import org.demoiselle.pagination.Pagination;
 
 import javax.enterprise.inject.spi.CDI;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;

@@ -42,6 +42,7 @@ import org.demoiselle.internal.configuration.SecurityConfig;
 import org.demoiselle.util.ResourceBundle;
 import org.demoiselle.util.Strings;
 
+import javax.annotation.Priority;
 import javax.enterprise.inject.spi.CDI;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
@@ -56,8 +57,9 @@ import java.util.logging.Logger;
  *
  * @author SERPRO
  */
-@Interceptor
 @RequiredPermission
+@Interceptor
+@Priority(Interceptor.Priority.APPLICATION)
 public class RequiredPermissionInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 1L;

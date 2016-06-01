@@ -38,20 +38,24 @@ package org.demoiselle.internal.producer;
 
 import org.demoiselle.annotation.Name;
 import org.demoiselle.annotation.Type;
+import org.demoiselle.annotation.literal.NameQualifier;
 import org.demoiselle.annotation.literal.NamedQualifier;
 import org.demoiselle.internal.configuration.PaginationConfig;
 import org.demoiselle.internal.implementation.PaginationImpl;
+import org.demoiselle.jsf.util.Parameter;
 import org.demoiselle.pagination.Pagination;
 
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.spi.Context;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.util.TypeLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -67,6 +71,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Dependent
 public class RequestScopedPaginationProducer {
 
+	private final TypeLiteral<Parameter<Integer>> parameterBeanType = new TypeLiteral<Parameter<Integer>>() {
+
+		private static final long serialVersionUID = -131138683926352180L;
+	};
+
 	@Inject
 	private PaginationConfig config;
 
@@ -74,9 +83,7 @@ public class RequestScopedPaginationProducer {
 	@Name
 	public Pagination getPagination(InjectionPoint ip) {
 		// Requer o escopo RequestScoped ativo
-		try {
-			CDI.current().getBeanManager().getContext(RequestScoped.class);
-		} catch (ContextNotActiveException ce) {
+		if (!isRequestScopeActive()) {
 			return null;
 		}
 
@@ -91,13 +98,11 @@ public class RequestScopedPaginationProducer {
 		}
 
 		if (nameQualifier != null) {
-			Map<String, Pagination> paginationCache = getPaginationCache();
+			final Map<String, Pagination> paginationCache = getPaginationCache();
 			pagination = paginationCache.get(nameQualifier.value());
 
 			if (pagination == null) {
-				pagination = new PaginationImpl();
-				pagination.setPageSize(config.getPageSize());
-
+				pagination = createPagination();
 				paginationCache.put(nameQualifier.value(), pagination);
 			}
 		}
@@ -109,9 +114,7 @@ public class RequestScopedPaginationProducer {
 	@Type
 	public Pagination getTypedPagination(InjectionPoint ip) {
 		// Requer o escopo RequestScoped ativo
-		try {
-			CDI.current().getBeanManager().getContext(RequestScoped.class);
-		} catch (ContextNotActiveException ce) {
+		if (!isRequestScopeActive()) {
 			return null;
 		}
 
@@ -126,14 +129,38 @@ public class RequestScopedPaginationProducer {
 		}
 
 		if (typeQualifier != null) {
-			Map<Class, Pagination> paginationCache = getTypedPaginationCache();
+			final Map<Class, Pagination> paginationCache = getTypedPaginationCache();
 			pagination = paginationCache.get(typeQualifier.value());
 
 			if (pagination == null) {
-				pagination = new PaginationImpl();
-				pagination.setPageSize(config.getPageSize());
-
+				pagination = createPagination();
 				paginationCache.put(typeQualifier.value(), pagination);
+			}
+		}
+
+		return pagination;
+	}
+
+	private boolean isRequestScopeActive() {
+		try {
+			HttpServletRequest request = CDI.current().select(HttpServletRequest.class).get();
+			request.getMethod();
+			return true;
+		}
+		catch (IllegalStateException is) {
+			return false;
+		}
+	}
+
+	private Pagination createPagination() {
+		Pagination pagination = new PaginationImpl();
+		pagination.setPageSize(config.getPageSize());
+
+		if (config.getRequestParameter() != null && !config.getRequestParameter().trim().isEmpty()) {
+			Parameter<Integer> currentPageParameter = CDI.current()
+					.select(parameterBeanType, new NameQualifier(config.getRequestParameter())).get();
+			if (currentPageParameter.getValue() != null) {
+				pagination.setCurrentPage(currentPageParameter.getValue());
 			}
 		}
 

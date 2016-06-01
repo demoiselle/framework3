@@ -71,6 +71,33 @@ public class Reflections {
 	 * <code>SpecializedType</code>.
 	 */
 	@SuppressWarnings("unchecked")
+	public static <T> Class<T> getGenericTypeArgument(final Type type, final int idx) {
+		ParameterizedType paramType;
+		try {
+			paramType = (ParameterizedType) type;
+		} catch (ClassCastException cause) {
+			return getGenericTypeArgument((Class<T>) type, idx);
+		}
+
+		return (Class<T>) paramType.getActualTypeArguments()[idx];
+	}
+
+	/**
+	 * Return the parametized type used with a concrete implementation of a class that accepts generics. Ex: If you
+	 * declare
+	 *
+	 * <pre>
+	 * <code>
+	 * public class SpecializedCollection implements Collection<SpecializedType> {
+	 *   // ...
+	 * }
+	 * </code>
+	 * </pre>
+	 *
+	 * then the code <code>getGenericTypeArgument(SpecializedCollection.class , 0);</code> will return the type
+	 * <code>SpecializedType</code>.
+	 */
+	@SuppressWarnings("unchecked")
 	public static <T> Class<T> getGenericTypeArgument(final Class<?> clazz, final int idx) {
 		final Type type = clazz.getGenericSuperclass();
 

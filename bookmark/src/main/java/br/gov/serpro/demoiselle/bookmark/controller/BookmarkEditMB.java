@@ -96,9 +96,8 @@ public class BookmarkEditMB extends AbstractEditPageBean<Bookmark, Long> {
 
 			if (msg.getSeverity().equals(FacesMessage.SEVERITY_WARN)) {
 				style = "has-warning";
-			}
-			else if (msg.getSeverity().equals(FacesMessage.SEVERITY_ERROR)
-					|| msg.getSeverity().equals(FacesMessage.SEVERITY_FATAL)) {
+			} else if (msg.getSeverity().equals(FacesMessage.SEVERITY_ERROR) || msg.getSeverity()
+					.equals(FacesMessage.SEVERITY_FATAL)) {
 				style = "has-error";
 				break;
 			}
