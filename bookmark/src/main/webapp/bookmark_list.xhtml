@@ -35,6 +35,9 @@
                 </div>
             </div>
 
+            <!-- Alert panel -->
+            <div class="row" id="alert_container"></div>
+
             <!-- Bookmark List Table -->
             <div class="row">
                 <div class="col-md-12">
@@ -91,7 +94,8 @@
                                     <span aria-hidden="true">&#171;</span>
                                     <f:param name="#{paginationConfig.requestParameter}"
                                              value="#{bookmarkListMB.bookmarkPagination.currentPage - 1}"/>
-                                    <f:ajax render="tab_bookmarks pagination"/>
+                                    <!--suppress BadExpressionStatementJS -->
+                                    <f:ajax render="tab_bookmarks pagination" onerror="bookmarkController.paginationErrorDialog"/>
                                 </a>
                             </li>
 
@@ -102,7 +106,8 @@
                                        jsf:action="#{bookmarkListMB.list}">
                                         #{page}
                                         <f:param name="#{paginationConfig.requestParameter}" value="#{page}"/>
-                                        <f:ajax render="tab_bookmarks pagination"/>
+                                        <!--suppress BadExpressionStatementJS -->
+                                        <f:ajax render="tab_bookmarks pagination" onerror="bookmarkController.paginationErrorDialog"/>
                                     </a>
                                 </li>
                             </ui:repeat>
@@ -114,7 +119,8 @@
                                     <span aria-hidden="true">&#187;</span>
                                     <f:param name="#{paginationConfig.requestParameter}"
                                              value="#{bookmarkListMB.bookmarkPagination.currentPage + 1}"/>
-                                    <f:ajax render="tab_bookmarks pagination"/>
+                                    <!--suppress BadExpressionStatementJS -->
+                                    <f:ajax render="tab_bookmarks pagination" onerror="bookmarkController.paginationErrorDialog"/>
                                 </a>
                             </li>
                         </ul>

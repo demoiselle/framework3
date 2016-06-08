@@ -296,8 +296,7 @@ public class PaginationImpl implements Serializable, Pagination {
 
 	private void validateOneIndexedValue(int input) throws IndexOutOfBoundsException {
 		if (input <= 0) {
-			//TODO colocar mensagem
-			throw new IndexOutOfBoundsException("colocar mensagem");
+			throw new IndexOutOfBoundsException( getBundle().getString("pagination-invalid-value", currentPage) );
 		}
 	}
 
