@@ -10,6 +10,8 @@
 		<class>org.demoiselle.security.RequiredPermissionInterceptor</class>
 		<class>org.demoiselle.security.RequiredRoleInterceptor</class>
 		<class>org.demoiselle.configuration.ConfigurationInterceptor</class>
+		<class>org.demoiselle.rest.util.CacheInterceptor</class>
+
 	</interceptors>
 
 </beans>
