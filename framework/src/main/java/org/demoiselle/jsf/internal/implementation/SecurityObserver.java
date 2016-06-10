@@ -120,6 +120,11 @@ public class SecurityObserver implements Serializable {
     }
 
     public void onLoginSuccessful(@Observes final AfterLoginSuccessful event) {
+		if (FacesContext.getCurrentInstance() == null) {
+			// Não estamos em um context JSF, ignora evento.
+			return;
+		}
+
         boolean redirectedFromConfig = false;
 
         try {
@@ -145,6 +150,11 @@ public class SecurityObserver implements Serializable {
     }
 
     public void onLogoutSuccessful(@Observes final AfterLogoutSuccessful event) {
+		if (FacesContext.getCurrentInstance() == null) {
+			// Não estamos em um context JSF, ignora evento.
+			return;
+		}
+
         try {
             if (getConfig().isRedirectEnabled()) {
                 Redirector.redirect(getConfig().getRedirectAfterLogout());
@@ -168,6 +178,4 @@ public class SecurityObserver implements Serializable {
         savedViewId = null;
         getSavedParams().clear();
     }
-
 }
-

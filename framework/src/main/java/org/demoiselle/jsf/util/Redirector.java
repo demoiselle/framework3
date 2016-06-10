@@ -13,7 +13,7 @@ import javax.faces.application.ViewHandler;
 import javax.faces.context.FacesContext;
 
 /**
- * Created by 01748913506 on 13/05/16.
+ * Utility class to launch page redirect events inside a JSF web application.
  */
 public class Redirector {
 
@@ -29,8 +29,8 @@ public class Redirector {
             if (viewId != null && !viewId.isEmpty()) {
                 FacesContext facesContext = FacesContext.getCurrentInstance();//CDI.current().select(FacesContext.class).get(); //Beans.getReference(FacesContext.class);
                 ViewHandler viewHandler = facesContext.getApplication().getViewHandler();
-                String url = viewHandler.getBookmarkableURL(facesContext, viewId, parse(params), params == null ? false
-                        : !params.isEmpty());
+                String url = viewHandler.getBookmarkableURL(facesContext, viewId, parse(params),
+						params != null && !params.isEmpty());
 
                 facesContext.getExternalContext().redirect(url);
             }
