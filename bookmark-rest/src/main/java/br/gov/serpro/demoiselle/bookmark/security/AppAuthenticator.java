@@ -1,5 +1,6 @@
 package br.gov.serpro.demoiselle.bookmark.security;
 
+import org.demoiselle.annotation.Priority;
 import org.demoiselle.rest.security.TokenAuthenticator;
 import org.demoiselle.security.InvalidCredentialsException;
 import org.demoiselle.servlet.security.Credentials;
@@ -12,6 +13,7 @@ import java.security.Principal;
  *
  * @author SERPRO
  */
+@Priority(Priority.L4_PRIORITY)
 public class AppAuthenticator extends TokenAuthenticator {
 
     private static final long serialVersionUID = 1L;
@@ -23,14 +25,7 @@ public class AppAuthenticator extends TokenAuthenticator {
         final String username = credentials.getUsername();
 
         if (credentials.getPassword().equals("secret")) {
-            user = new Principal() {
-
-                @Override
-                public String getName() {
-                    return username;
-                }
-            };
-
+            user = () -> username;
         } else {
             throw new InvalidCredentialsException();
         }

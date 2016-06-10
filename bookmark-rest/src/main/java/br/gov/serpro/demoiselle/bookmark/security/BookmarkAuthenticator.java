@@ -1,5 +1,6 @@
 package br.gov.serpro.demoiselle.bookmark.security;
 
+import org.demoiselle.annotation.Priority;
 import org.demoiselle.security.Authenticator;
 import org.demoiselle.security.InvalidCredentialsException;
 import org.demoiselle.servlet.security.Credentials;
@@ -12,9 +13,12 @@ import java.security.Principal;
  * @author SERPRO
  */
 @SessionScoped
+@Priority(Priority.L3_PRIORITY)
 public class BookmarkAuthenticator implements Authenticator {
 
-    private Principal principal;
+	private static final long serialVersionUID = -118515447020255993L;
+
+	private Principal principal;
 
     /**
      * Authenticates any user since that password be "secret".
@@ -26,12 +30,7 @@ public class BookmarkAuthenticator implements Authenticator {
         Credentials credentials = CDI.current().select(Credentials.class).get();
 
         if(credentials.getPassword().equals("secret")){
-            this.principal = new Principal() {
-                @Override
-                public String getName() {
-                    return credentials.getUsername();
-                }
-            };
+            this.principal = credentials::getUsername;
         } else {
             throw new InvalidCredentialsException();
         }
