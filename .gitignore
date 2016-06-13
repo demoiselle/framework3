@@ -4,7 +4,9 @@
 /target
 /bookmark/target
 /framework/target
-
+/archetypes/html5-rest/target
+/archetypes/jsf-jpa/target
+/bookmark-rest/target
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
