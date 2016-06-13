@@ -12,7 +12,6 @@
 		<groupId>org.demoiselle</groupId>
 		<artifactId>demoiselle-parent</artifactId>
 		<version>3.0.0-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
 	</parent>
 
 	<dependencies>
@@ -21,25 +20,6 @@
 			<artifactId>demoiselle</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
-
-		<!-- Prime Faces main dependency and theme -->
-		<!--<dependency>
-			<groupId>org.primefaces</groupId>
-			<artifactId>primefaces</artifactId>
-			<version>5.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.primefaces.themes</groupId>
-			<artifactId>bootstrap</artifactId>
-			<version>1.0.10</version>
-		</dependency>-->
-
-		<!-- Boots Faces JSF library with Bootstrap specific widgets -->
-		<!--<dependency>
-			<groupId>net.bootsfaces</groupId>
-			<artifactId>bootsfaces</artifactId>
-			<version>0.8.0</version>
-		</dependency>-->
 	</dependencies>
 
 	<build>
@@ -64,7 +44,7 @@
 			</plugin>
 		</plugins>
 
-		<finalName>bookmark2</finalName>
+		<finalName>${artifactId}</finalName>
 	</build>
 
 	<repositories>
