@@ -7,6 +7,8 @@
 	<artifactId>demoiselle</artifactId>
 	<packaging>jar</packaging>
 
+	<name>Demoiselle Core Library</name>
+
 	<parent>
 		<groupId>org.demoiselle</groupId>
 		<artifactId>demoiselle-parent</artifactId>

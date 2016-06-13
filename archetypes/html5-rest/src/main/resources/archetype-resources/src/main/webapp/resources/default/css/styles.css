@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+
+.ui-icon-locale-pt, .ui-icon-locale-en {
+    width: 32px;
+    height: 31px;
+    background-position: center;
+    display: block;
+    float: left;
+    background-repeat: no-repeat;
+}
+
+.ui-icon-locale-pt {
+    background-image: url("#{resource['default:images/locale_pt.png']}");
+}
+
+.ui-icon-locale-en {
+    background-image: url("#{resource['default:images/locale_en.png']}");
+}

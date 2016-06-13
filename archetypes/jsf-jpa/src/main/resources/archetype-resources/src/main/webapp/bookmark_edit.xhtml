@@ -1,0 +1,111 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                template="/template/main.xhtml">
+
+    <ui:define name="body">
+        <form jsf:id="form_bookmark_edit" jsf:prependId="false">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                <div class="btn-group" role="group" aria-label="...">
+
+                                    <button class="btn btn-xs btn-primary" jsf:action="${symbol_pound}{bookmarkEditMB.insert}"
+                                            jsf:rendered="${symbol_pound}{!bookmarkEditMB.updateMode}">
+                                        <span class="glyphicon glyphicon-floppy-disk"/> ${symbol_pound}{messages['button.save']}
+                                    </button>
+
+                                    <button class="btn btn-xs btn-primary" jsf:action="${symbol_pound}{bookmarkEditMB.update}"
+                                            jsf:rendered="${symbol_pound}{bookmarkEditMB.updateMode}">
+                                        <span class="glyphicon glyphicon-pencil"/> ${symbol_pound}{messages['button.save']}
+                                    </button>
+
+                                    <button class="btn btn-xs btn-danger"
+                                            type="button"
+                                            data-toggle="modal"
+                                            data-target="${symbol_pound}dialog_delete"
+                                            jsf:rendered="${symbol_pound}{bookmarkEditMB.updateMode}">
+                                        <span class="glyphicon glyphicon-trash"/> ${symbol_pound}{messages['button.delete']}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading panel-collapse">
+                            <h3 class="panel-title">${symbol_pound}{messages['bookmark.label']}</h3>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label"
+                                   jsf:for="bookmark_id">${symbol_pound}{messages['bookmark.label.id']}: </label>
+                            <input type="hidden" jsf:value="${symbol_pound}{bookmarkEditMB.bean.id}" autocomplete="off"/>
+                            <span jsf:id="bookmark_id">${symbol_pound}{bookmarkEditMB.bean.id}</span>
+                        </div>
+
+                        <div class="form-group ${symbol_pound}{bookmarkEditMB.getMessageStyle('bookmark_description')}">
+                            <label class="control-label"
+                                   jsf:for="bookmark_description">${symbol_pound}{messages['bookmark.label.description']}: </label>
+                            <input type="text" class="form-control" jsf:id="bookmark_description"
+                                   placeholder="${symbol_pound}{messages['hint.description']}"
+                                   jsf:value="${symbol_pound}{bookmarkEditMB.bean.description}"/>
+                            <h:message for="bookmark_description" warnClass="control-label" errorClass="control-label"
+                                       fatalClass="control-label"/>
+                        </div>
+
+                        <div class="form-group ${symbol_pound}{bookmarkEditMB.getMessageStyle('bookmark_link')}">
+                            <label class="control-label"
+                                   jsf:for="bookmark_link">${symbol_pound}{messages['bookmark.label.link']}: </label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="${symbol_pound}{messages['hint.link']}"
+                                   jsf:id="bookmark_link"
+                                   jsf:value="${symbol_pound}{bookmarkEditMB.bean.link}"/>
+                            <h:message for="bookmark_link" warnClass="control-label" errorClass="control-label"
+                                       fatalClass="control-label"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" tabindex="-1" role="dialog" id="dialog_delete">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&${symbol_pound}215;</span></button>
+                            <h4 class="modal-title">${symbol_pound}{messages['label.confirm.delete']}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>${symbol_pound}{messages['label.confirm.delete.text']}</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default"
+                                    data-dismiss="modal">${symbol_pound}{messages['button.dialog.no']}</button>
+                            <f:ajax render="tab_bookmarks" execute="@all" onevent="closeModalAfterAction">
+                                <button class="btn btn-primary" jsf:action="${symbol_pound}{bookmarkEditMB.delete}">
+                                    ${symbol_pound}{messages['button.dialog.yes']}
+                                </button>
+                            </f:ajax>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </form>
+    </ui:define>
+
+</ui:composition>

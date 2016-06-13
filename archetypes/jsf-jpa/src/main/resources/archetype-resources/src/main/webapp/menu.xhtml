@@ -1,0 +1,56 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <form jsf:id="form_main_menu">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="${symbol_pound}bookmark_main_menu" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"/>
+                        <span class="icon-bar"/>
+                        <span class="icon-bar"/>
+                    </button>
+                    <a href="index.jsf" class="navbar-brand">
+                        <img jsf:library="default" jsf:name="images/logo.png" alt="${symbol_pound}{messages['bookmark.label']}" width="20" height="20"/>
+                    </a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bookmark_main_menu">
+                    <ul class="nav navbar-nav">
+                        <li><a href="bookmark_edit.jsf">${symbol_pound}{messages['menu.menuitem.new']}</a></li>
+                        <li><a href="bookmark_list.jsf">${symbol_pound}{messages['menu.menuitem.list']}</a></li>
+                        <li class="dropdown">
+                            <a href="${symbol_pound}" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-haspopup="true" aria-expanded="false">
+                               ${symbol_pound}{messages['label.user']} <span class="caret"/>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="login.jsf">${symbol_pound}{messages['menu.menuitem.login']}</a></li>
+                                <li><a href="${symbol_pound}" jsf:action="${symbol_pound}{securityContext.logout}">${symbol_pound}{messages['menu.menuitem.quit']}</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="${symbol_pound}" jsf:action="${symbol_pound}{locales.setCurrentLocale('pt')}">
+                                <img jsf:library="default" jsf:name="images/locale_pt.png" alt="${symbol_pound}{messages['menu.menuitem.language-portuguese']}"/>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${symbol_pound}" jsf:action="${symbol_pound}{locales.setCurrentLocale('en')}">
+                                <img jsf:library="default" jsf:name="images/locale_en.png" alt="${symbol_pound}{messages['menu.menuitem.language-english']}"/>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </form>
+</ui:composition>
+

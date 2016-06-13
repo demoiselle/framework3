@@ -7,6 +7,8 @@
 	<packaging>pom</packaging>
 	<modelVersion>4.0.0</modelVersion>
 
+	<name>Demoiselle Parent POM</name>
+
 	<parent>
 		<groupId>org.demoiselle</groupId>
 		<artifactId>demoiselle-project</artifactId>

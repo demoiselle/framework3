@@ -1,0 +1,16 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="/template/main.xhtml">
+
+    <ui:define name="body">
+        <div class="col-md-12 panel panel-default">
+            <div class="panel-body">
+                ${symbol_pound}{messages['main.app.welcome']}
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

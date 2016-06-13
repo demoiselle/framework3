@@ -1,0 +1,22 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+			 version="2.1">
+
+	<persistence-unit name="bookmark-db" transaction-type="JTA">
+		<description>Persistence unit to access bookmark storage</description>
+
+		<jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
+
+		<class>${package}.domain.Bookmark</class>
+
+		<properties>
+			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+		</properties>
+	</persistence-unit>
+
+</persistence>
