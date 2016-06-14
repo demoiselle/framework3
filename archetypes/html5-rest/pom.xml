@@ -5,8 +5,14 @@
 
 	<groupId>br.gov.frameworkdemoiselle.archetypes</groupId>
 	<artifactId>html5-rest</artifactId>
-	<version>3.0-SNAPSHOT</version>
 	<packaging>maven-archetype</packaging>
+
+	<parent>
+		<groupId>br.gov.frameworkdemoiselle</groupId>
+		<artifactId>demoiselle-parent</artifactId>
+		<version>3.0.0-ALPHA1-SNAPSHOT</version>
+		<relativePath>../../parent</relativePath>
+	</parent>
 
 	<name>Demoiselle HTML5 and RESTful Services</name>
 

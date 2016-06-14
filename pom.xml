@@ -6,7 +6,7 @@
 
 	<groupId>br.gov.frameworkdemoiselle</groupId>
 	<artifactId>demoiselle-project</artifactId>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>3.0.0-ALPHA1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Demoiselle Framework Project</name>
@@ -25,12 +25,65 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
+	<scm>
+		<connection>scm:git:git@github.com:demoiselle/${project.alias}.git</connection>
+		<developerConnection>scm:git:git@github.com:demoiselle/${project.alias}.git</developerConnection>
+		<url>http://github.com/demoiselle/${project.alias}</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>sonatype-nexus-releases</id>
+			<name>Sonatype Nexus Releases</name>
+			<url>https://oss.sonatype.org/content/repositories/releases</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<site>
+			<id>demoiselle.sourceforge.net</id>
+			<url>${site.url}</url>
+		</site>
+	</distributionManagement>
+
 	<properties>
-		<project.version>3.0.0-SNAPSHOT</project.version>
+		<project.version>3.0.0-ALPHA1-SNAPSHOT</project.version>
+		<project.alias>framework3</project.alias>
+		<site.url>${site.unversioned.url}/${project.version}</site.url>
+		<site.unversioned.url>${htdocs.url}/${project.context}</site.unversioned.url>
+		<htdocs.url>sftp://web.sourceforge.net/home/project-web/demoiselle/htdocs</htdocs.url>
+		<project.context>${project.alias}</project.context>
 	</properties>
 
 </project>
