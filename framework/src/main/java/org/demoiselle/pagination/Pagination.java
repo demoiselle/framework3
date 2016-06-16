@@ -77,20 +77,20 @@ import java.util.List;
  * <p>
  * For example:
  * <pre>
- *     \u0040ViewController
+ *     &#064;ViewController
  *     public class BookmarkView {
- *         \u0040Inject
- *         \u0040Name("BookmarkCollection")
+ *         &#064;Inject
+ *         &#064;Name("BookmarkCollection")
  *         private Pagination bookmarkPagination;
  *
- *         \u0040Inject
- *         \u0040Type(LinkReference.class)
+ *         &#064;Inject
+ *         &#064;Type(LinkReference.class)
  *         private Pagination linkPagination;
  *
- *         \u0040Inject
+ *         &#064;Inject
  *         private BookmarkPersistence bookmarkPersistence;
  *
- *         public List \u003C Bookmark \u003E getBookmarkList(int currentPage) {
+ *         public List &#60; Bookmark &#62; getBookmarkList(int currentPage) {
  *             if (bookmarkPagination != null) {
  *                 bookmarkPagination.setCurrentPage(currentPage);
  *             }
@@ -99,14 +99,14 @@ import java.util.List;
  *         }
  *     }
  *
- *     \u0040PersistenceController
+ *     &#064;PersistenceController
  *     public class BookmarkPersistence {
  *
- *         \u0040Inject
- *         \u0040Name("BookmarkCollection")
+ *         &#064;Inject
+ *         &#064;Name("BookmarkCollection")
  *         private Pagination bookmarkPagination;
  *
- *         public List \u003C Bookmark \u003E listAll() {
+ *         public List &#60; Bookmark &#62; listAll() {
  *             Query bookmarkQuery = //... Initialize database query
  *
  *             if (bookmarkPagination != null && bookmarkPagination.getFirstResult() >= 0) {

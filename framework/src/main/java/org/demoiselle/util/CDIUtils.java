@@ -34,7 +34,10 @@ public final class CDIUtils {
 	}
 
 	/**
+	 * @param annotationType Type of the annotation being checked
+	 * @param allAnnotations List of annotations to check for the specific one
 	 * @see #hasAnnotation(Class, Annotation...)
+	 * @return <code>true</code> if the annotation is present on the list
 	 */
 	@SuppressWarnings("WeakerAccess")
 	public static boolean hasAnnotation(Class<? extends Annotation> annotationType,
@@ -45,7 +48,10 @@ public final class CDIUtils {
 	/**
 	 * Returns <code>true</code> if a base class is annotated with the provided annotation.
 	 *
+	 * @param annotationType Annotation type to look for
+	 * @param baseType Class to check for the informed annotation
 	 * @see #hasAnnotation(Class, Annotation...)
+	 * @return <code>true</code> if the annotation is present on the list
 	 */
 	@SuppressWarnings("WeakerAccess")
 	public static boolean hasAnnotation(Class<? extends Annotation> annotationType, Class<?> baseType) {
@@ -58,6 +64,7 @@ public final class CDIUtils {
 	 *
 	 * @param annotationType Annotation type being looked for.
 	 * @param allAnnotations List of all annotations where to look for.
+	 * @param <T> Type of the specific annotation returned
 	 * @return The annotation instance found, or <code>null</code> if there is no such annotation present.
 	 */
 	@SuppressWarnings({ "WeakerAccess", "unchecked" })
@@ -72,7 +79,11 @@ public final class CDIUtils {
 	}
 
 	/**
+	 * @param annotationType Annotation type being looked for.
+	 * @param allAnnotations List of all annotations where to look for.
+	 * @param <T> Type of the specific annotation returned
 	 * @see #getAnnotation(Class, Annotation...)
+	 * @return The annotation instance found, or <code>null</code> if there is no such annotation present.
 	 */
 	@SuppressWarnings({ "WeakerAccess" })
 	public static <T extends Annotation> T getAnnotation(Class<T> annotationType,
@@ -99,6 +110,7 @@ public final class CDIUtils {
 	 *
 	 * @param qualifierAnnotationType Annotation type being looked for.
 	 * @param ip                      Injection point of a bean type.
+	 * @param <T> Type of the specific annotation returned
 	 * @return The annotation instance found, or <code>null</code> if there is no such annotation present.
 	 */
 	@SuppressWarnings("WeakerAccess")

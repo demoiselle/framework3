@@ -45,11 +45,13 @@ public interface Message {
 
 	/**
 	 * Represents the text of the message.
+	 * @return current message text
 	 */
 	String getText();
 
 	/**
 	 * Represents the kind of message. It could be useful for presentation layer.
+	 * @return kind of message
 	 */
 	SeverityType getSeverity();
 

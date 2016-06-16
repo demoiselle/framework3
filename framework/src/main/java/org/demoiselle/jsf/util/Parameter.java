@@ -54,24 +54,21 @@ import javax.faces.convert.Converter;
  * annotation to specify the name of the parameter, though if no {@link org.demoiselle.annotation.Name} annotation
  * is specified then the name of the attribute must match the name of the request parameter.
  * </p>
- * <p>
- * <code>
  * <pre>
  *
- *             public class BookmarkView {
+ * public class BookmarkView {
  *
- *                 \u0040Inject
- *                 \u0040Name("page")
- *                 Parameter\u003CInteger\u003E pageParameter;
+ *     &#064;Inject
+ *     &#064;Name("page")
  *
- *                 public void doAction() {
- *                     System.out.println("The value of the 'page' request parameter is: " + pageParameter.getValue();
- *                 }
- *             }
+ *     Parameter&#60;Integer&#62; pageParameter;
  *
- *     </pre>
- * </code>
- * </p>
+ *     public void doAction() {
+ *         System.out.println("The value of the 'page' request parameter is: " + pageParameter.getValue();
+ *     }
+ * }
+ *
+ * </pre>
  * <p>
  * By default parameters will be retrieved from the current request parameter list, as if calling
  * {@link javax.servlet.ServletRequest#getParameter(String)} with the name of this parameter as argument.

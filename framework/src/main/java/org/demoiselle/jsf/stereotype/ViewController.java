@@ -59,7 +59,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * </ul>
  * 
  * @author SERPRO
- * @see @Controller
+ * @see Controller
  */
 @Named
 @Controller

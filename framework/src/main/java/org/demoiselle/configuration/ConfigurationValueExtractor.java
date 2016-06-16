@@ -70,6 +70,8 @@ public interface ConfigurationValueExtractor {
 	 * 			configuration field to be setted.
 	 * @param configuration
 	 * 			a configuration object.
+	 * @return current value of this property
+	 * @throws Exception if the value can't be extracted from the property file
 	 */
 	Object getValue(String prefix, String key, Field field, Configuration configuration) throws Exception;
 
@@ -79,6 +81,7 @@ public interface ConfigurationValueExtractor {
 	 * 
 	 * @param field
 	 * 			field to be checked.
+	 * @return <code>true</code> if this extractor can convert this field into the extractor's final type
 	 */
 	boolean isSupported(Field field);
 }

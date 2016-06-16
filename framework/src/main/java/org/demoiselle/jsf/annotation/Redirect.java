@@ -53,6 +53,7 @@ public @interface Redirect {
 
 	/**
 	 * Defines the view ID.
+	 * @return ID of the desired view
 	 */
 	String viewId() default "";
 

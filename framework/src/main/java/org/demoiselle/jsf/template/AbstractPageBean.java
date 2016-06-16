@@ -52,12 +52,11 @@ import org.demoiselle.jsf.util.Faces;
  * the user after a managed bean's action.
  * </p>
  *
- * <p>
  * ex:
  *
  * <pre>
- *     \u0040PreviousView("previous_page_when_canceled")
- *     \u0040NextView("next_page_when_success")
+ *     &#064;PreviousView("previous_page_when_canceled")
+ *     &#064;NextView("next_page_when_success")
  *     public class ConcreteManagedBean extends AbstractPageBean {
  *         public String saveAction() {
  *             // ... Call a business object's method
@@ -75,7 +74,6 @@ import org.demoiselle.jsf.util.Faces;
  *         }
  *     }
  * </pre>
- * </p>
  *
  * @author SERPRO
  * @see PageBean

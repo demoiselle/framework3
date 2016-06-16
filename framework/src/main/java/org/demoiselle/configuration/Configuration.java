@@ -57,13 +57,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * a running application. For that reason usually configuration fields are immutable, to avoid
  * changes made in one context affecting other contexts in a running application.
  * </p>
- * <p>
- * A <i>Configuration</i> is:
+ * <p>A <i>Configuration</i> is:</p>
  * <ul>
  * <li>defined when annotated with {@code @Configuration}</li>
  * <li>automatically injected whenever {@code @Inject} is used</li>
  * </ul>
- * </p>
  *
  * @author SERPRO
  */

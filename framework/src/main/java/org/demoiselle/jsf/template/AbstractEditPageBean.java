@@ -59,8 +59,8 @@ import javax.inject.Inject;
  * Pages that navigate to a page controlled by this class can pass a request parameter
  * called <code>id</code> with a String representation of an entity's identifier. If such
  * parameter exists when this bean is instantiated then the user implemented method
- * {@link #handleLoad(I id)} will be called passing the already converted value of this
- * parameter. The user then has to implement {@link #handleLoad(I id)} to load this entity
+ * {@link #handleLoad(Object id)} will be called passing the already converted value of this
+ * parameter. The user then has to implement {@link #handleLoad(Object id)} to load this entity
  * from the persistence layer using the value of <code>id</code> as the unique identifier.
  * </p>
  *
@@ -74,7 +74,7 @@ import javax.inject.Inject;
  * <p>
  * If a page controlled by this class is called without the <code>id</code> request parameter
  * then it assumes a new instance of the bean is being created. In this case
- * {@link #handleLoad(I id)} won't be called and {@link #getBean()} will create a new, empty instance
+ * {@link #handleLoad(Object id)} won't be called and {@link #getBean()} will create a new, empty instance
  * of the bean the first time it's called, but will then always return this same instance while
  * the current instance of this controller is on scope (assuming the concrete implementation
  * defined a scope such as {@link javax.enterprise.context.RequestScoped}).
