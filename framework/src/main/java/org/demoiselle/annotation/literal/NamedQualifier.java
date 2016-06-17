@@ -42,9 +42,10 @@ import java.lang.annotation.Annotation;
 
 /**
  * Annotation litteral that allows to create instances of the {@link Named} literal.
- * Those instances can then be used to call {@link Beans#getReference(Class type, Annotation... qualifiers)}.
+ * Those instances can then be used to call
+ * {@link javax.enterprise.inject.spi.CDI#select(Class subtype, Annotation... qualifiers)}
  *  
- * @see Beans
+ * @see javax.enterprise.inject.spi.CDI
  * @see Named
  * 
  * @author SERPRO

@@ -39,14 +39,12 @@ package org.demoiselle.annotation.literal;
 import org.demoiselle.annotation.Strategy;
 
 import javax.enterprise.util.AnnotationLiteral;
-import java.lang.annotation.Annotation;
 
 /**
  * Annotation litteral that allows to create instances of the {@link Strategy} literal. The created instance can then be
- * used to call {@link Beans#getReference(Class type, Annotation... qualifiers)}.
+ * used to call {@link javax.enterprise.inject.spi.CDI#select(Class subtype, java.lang.annotation.Annotation... qualifiers)}.
  * 
- * @see Beans
- * @see AmbiguousQualifier
+ * @see javax.enterprise.inject.spi.CDI
  * @author SERPRO
  */
 @SuppressWarnings("all")

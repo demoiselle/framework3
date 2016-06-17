@@ -46,29 +46,22 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Identifies a method eligible to be executed automatically during <b>application finalization</b>.
  * <p>
  * Take a look at the following usage sample:
- * <p>
- * <blockquote>
- * 
+ * </p>
  * <pre>
  * public class Finalizer {
- * 
- * 	&#064;Shutdown
- *   &#064;Priority(5)
- *   public void finalize() {
- *       ...
- *    }
+ *     &#064;Shutdown
+ *     &#064;Priority(5)
+ *     public void finalize() {
+ *         ...
+ *     }
  * }
- * 
- * 
  * </pre>
- * 
- * </blockquote>
- * <p>
- * 
+ *
  * @author SERPRO
  */
 @Target(METHOD)
 @Retention(RUNTIME)
 @LifecycleAnnotation
 public @interface Shutdown {
+
 }

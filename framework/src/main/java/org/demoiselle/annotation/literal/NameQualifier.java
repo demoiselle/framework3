@@ -42,11 +42,10 @@ import javax.enterprise.util.AnnotationLiteral;
 
 /**
  * Annotation litteral that allows to create instances of the {@link Name} literal. The created instance can then be
- * used to call {@link Beans#getReference(Class type, Annotation... qualifiers)}.
- * 
- * @see Beans
- * @see AmbiguousQualifier
+ * used to call {@link javax.enterprise.inject.spi.CDI#select(Class subtype, java.lang.annotation.Annotation... qualifiers)}
+ *
  * @author SERPRO
+ * @see javax.enterprise.inject.spi.CDI
  */
 @SuppressWarnings("all")
 public class NameQualifier extends AnnotationLiteral<Name> implements Name {
@@ -57,9 +56,8 @@ public class NameQualifier extends AnnotationLiteral<Name> implements Name {
 
 	/**
 	 * Constructor with string value of name literal.
-	 * 
-	 * @param value
-	 *            value of name literal.
+	 *
+	 * @param value value of name literal.
 	 */
 	public NameQualifier(String value) {
 		this.value = value;

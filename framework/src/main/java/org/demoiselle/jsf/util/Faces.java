@@ -36,7 +36,7 @@
  */
 package org.demoiselle.jsf.util;
 
-import org.demoiselle.annotation.ApplicationException;
+import org.demoiselle.stereotype.ApplicationException;
 import org.demoiselle.jsf.message.ValidationFailedMessage;
 import org.demoiselle.message.Message;
 import org.demoiselle.message.SeverityType;

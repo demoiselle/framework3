@@ -36,11 +36,9 @@
  */
 package org.demoiselle.internal.implementation;
 
-import org.demoiselle.annotation.ApplicationException;
+import org.demoiselle.stereotype.ApplicationException;
 import org.demoiselle.annotation.Priority;
 import org.demoiselle.annotation.literal.NameQualifier;
-import org.demoiselle.internal.producer.LoggerProducer;
-import org.demoiselle.internal.producer.ResourceBundleProducer;
 import org.demoiselle.message.SeverityType;
 import org.demoiselle.util.ResourceBundle;
 

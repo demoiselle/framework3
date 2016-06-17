@@ -234,7 +234,7 @@ public final class Strings {
 	/**
 	 * Removes braces from a given string.
 	 *
-	 * @param string
+	 * @param string Message to remove braces from
 	 * @return String the given string without braces.
 	 */
 	public static String removeBraces(String string) {

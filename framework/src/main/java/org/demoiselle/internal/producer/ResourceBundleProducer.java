@@ -65,7 +65,7 @@ public class ResourceBundleProducer implements Serializable {
 		return create((String) null);
 	}
 
-	/**
+	/*
 	 * Produces a {@link java.util.ResourceBundle} instance loading the properties file whose name
 	 * is defined by the {@link Name} literal. If no value is specified
 	 * then the default "messages.properties" file is loaded.

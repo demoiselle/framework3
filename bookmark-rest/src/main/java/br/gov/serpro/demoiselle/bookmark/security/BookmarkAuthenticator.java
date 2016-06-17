@@ -21,8 +21,8 @@ public class BookmarkAuthenticator implements Authenticator {
 	private Principal principal;
 
     /**
-     * Authenticates any user since that password be "secret".
-     * @throws Exception
+     * Sample authenticator that authenticates any user with the password "secret".
+     * @throws Exception If the authentication process fails
      */
     @Override
     public void authenticate() throws Exception {

@@ -36,7 +36,7 @@
  */
 package org.demoiselle.jsf.internal.implementation;
 
-import org.demoiselle.exception.ApplicationException;
+import org.demoiselle.stereotype.ApplicationException;
 import org.demoiselle.exception.DemoiselleException;
 import org.demoiselle.jsf.internal.configuration.ExceptionHandlerConfig;
 import org.demoiselle.jsf.util.Faces;

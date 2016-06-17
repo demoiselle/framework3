@@ -52,6 +52,13 @@ public class LoggerProducer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/*
+	 * Produces a default {@link Logger} instance. If it's possible
+	 * to infer the injection point's parent class then this class'es
+	 * name will be used to categorize the logger, if not then
+	 * the logger won't be categorized.
+	 *
+	 */
 	@Default
 	@Produces
 	public Logger create(final InjectionPoint ip) {
@@ -66,13 +73,14 @@ public class LoggerProducer implements Serializable {
 		return create(name);
 	}
 
-	/**
+	/*
 	 * Produces a {@link Logger} instance categorized by the value
 	 * defined by the {@link Name} literal.
+	 *
 	 */
 	@Name
 	@Produces
-	public Logger createNamed(final InjectionPoint ip) throws ClassNotFoundException {
+	public Logger createNamed(final InjectionPoint ip) {
 		Name nameAnnotation = CDIUtils.getQualifier(Name.class, ip);
 		String name = nameAnnotation.value();
 		return create(name);

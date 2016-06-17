@@ -221,8 +221,8 @@ public abstract class JPADatabaseAccess<T, I> implements DatabaseAccess<T, I> {
 	 *
 	 * <p>
 	 * The default implementation always return <code>null</code>. If
-	 * you want to paginate results returned by the methods {@link #loadList(I[])},
-	 * {@link #loadList(List<I>)} and {@link #listAll()} then overwrite this method
+	 * you want to paginate results returned by the methods {@link #loadList(Object[])},
+	 * {@link #loadList(List)} and {@link #listAll()} then overwrite this method
 	 * and return a valid pagination object.
 	 * </p>
 	 *

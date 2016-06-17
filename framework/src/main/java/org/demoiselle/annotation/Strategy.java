@@ -60,15 +60,15 @@ import javax.inject.Qualifier;
  * <p>
  * This allows users to plug in libraries with new candidates and have them be selected
  * if their priority values are higher than the default values already present. One example
- * is the {@link Authorizer} type, the framework has a {@link DefaultAuthorizer}
+ * is the {@link org.demoiselle.security.Authorizer} type, the framework has a {@link org.demoiselle.internal.implementation.DefaultAuthorizer}
  * with {@link Priority#L1_PRIORITY the lowest priority} but the user can add libraries with new
- * implementations of {@link Authorizer} annotated with higher priorities, the code will
+ * implementations of {@link org.demoiselle.security.Authorizer} annotated with higher priorities, the code will
  * then automatically select these new implementations with no extra configuration.
  * </p>
  *
  * <p>
- * This annotation must be used with supported types. Usually this involves creating {@link javax.enterprise.inject.Produces CDI
- * producer methods} that will select the correct strategy. To create your own producer
+ * This annotation must be used with supported types. Usually this involves creating {@link javax.enterprise.inject.Produces} CDI
+ * producer methods that will select the correct strategy. To create your own producer
  * methods that support strategy selection, use the utility {@linkplain org.demoiselle.internal.producer.StrategySelector}.
  * </p>
  *

@@ -87,9 +87,10 @@ public @interface Priority {
 
 	/**
 	 * <p>
-	 * An integer value defines the priority order.
+	 * An integer value defines the priority order. The lower the value, the greater priority.
 	 * <p>
-	 * The lower the value, the greater priority.
+	 *
+	 * @return Priority value, lower values have higher priority.
 	 */
 	int value();
 }
