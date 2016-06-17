@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>br.gov.frameworkdemoiselle.archetypes</groupId>
-	<artifactId>html5-rest</artifactId>
+	<artifactId>demoiselle-html-rest</artifactId>
 	<packaging>maven-archetype</packaging>
 
 	<parent>

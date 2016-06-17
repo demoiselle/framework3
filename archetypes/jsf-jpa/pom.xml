@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>br.gov.frameworkdemoiselle.archetypes</groupId>
-	<artifactId>jsf-jpa</artifactId>
+	<artifactId>demoiselle-jsf-jpa</artifactId>
 	<packaging>maven-archetype</packaging>
 
 	<parent>
