@@ -61,6 +61,8 @@ public class InvalidCredentialsException extends AuthenticationException {
 	 * <p>
 	 * Constructs an <code>InvalidCredentialsException</code> with a message.
 	 * </p>
+	 *
+	 * @param message exception message.
 	 */
 	public InvalidCredentialsException(String message) {
 		super(message);

@@ -250,7 +250,7 @@ public final class Strings {
 	/**
 	 * Inserts braces in a given string.
 	 *
-	 * @param string
+	 * @param string Original string to insert braces on.
 	 * @return String the given string with braces.
 	 */
 	public static String insertBraces(String string) {

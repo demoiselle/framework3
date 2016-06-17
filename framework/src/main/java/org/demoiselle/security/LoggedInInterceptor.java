@@ -46,7 +46,7 @@ import java.io.Serializable;
 
 /**
  * <p>
- *Intercepts calls with {@link @LoggedIn} annotations.
+ *Intercepts calls with {@link LoggedIn} annotations.
  * </p>
  *
  * @author SERPRO

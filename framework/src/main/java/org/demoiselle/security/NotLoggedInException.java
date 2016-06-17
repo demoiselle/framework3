@@ -51,6 +51,8 @@ public class NotLoggedInException extends AuthenticationException {
 	 * <p>
 	 * Constructs an <code>NotLoggedInException</code> with a message.
 	 * </p>
+	 *
+	 * @param message exception message
 	 */
 	public NotLoggedInException(String message) {
 		super(message);

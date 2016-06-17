@@ -65,7 +65,6 @@ import java.util.List;
  * indicating visually to the user that this number is unknown, for example by only providing
  * <i>next</i> and <i>previous</i> options instead of specific page numbers to be chosen.
  * </p>
- *
  * <p>
  * To use Pagination instances in your code inject them with {@link javax.inject.Inject} and qualify
  * them with either the {@link org.demoiselle.annotation.Name} qualifier or the {@link org.demoiselle.annotation.Type}
@@ -73,88 +72,69 @@ import java.util.List;
  * the same resource will point to the same paginator. This allows you to have multiple pagination objects paginating
  * multiple collections in the same request.
  * </p>
- *
  * <p>
- * For example:
+ * For example:</p>
  * <pre>
  *     &#064;ViewController
  *     public class BookmarkView {
  *         &#064;Inject
  *         &#064;Name("BookmarkCollection")
  *         private Pagination bookmarkPagination;
- *
  *         &#064;Inject
  *         &#064;Type(LinkReference.class)
  *         private Pagination linkPagination;
- *
  *         &#064;Inject
  *         private BookmarkPersistence bookmarkPersistence;
- *
  *         public List &#60; Bookmark &#62; getBookmarkList(int currentPage) {
  *             if (bookmarkPagination != null) {
  *                 bookmarkPagination.setCurrentPage(currentPage);
  *             }
- *
  *             return bookmarkPersistence.listAll();
  *         }
  *     }
  *
  *     &#064;PersistenceController
  *     public class BookmarkPersistence {
- *
  *         &#064;Inject
  *         &#064;Name("BookmarkCollection")
  *         private Pagination bookmarkPagination;
- *
  *         public List &#60; Bookmark &#62; listAll() {
  *             Query bookmarkQuery = //... Initialize database query
- *
- *             if (bookmarkPagination != null && bookmarkPagination.getFirstResult() >= 0) {
+ *             if (bookmarkPagination != null &#38;&#38; bookmarkPagination.getFirstResult() >= 0) {
  *                 // Indicates to our presentation layer the maximum number of bookmarks
  *                 bookmarkPagination.setTotalResults( this.countAll() );
- *
  *                 bookmarkQuery.setFirstResult( bookmarkPagination.getFirstResult() );
  *                 bookmarkQuery.setMaxResults( bookmarkPagination.getMaxResults() );
  *             }
- *
  *             return bookmarkQuery.getResultList();
  *         }
- *
  *         public int countAll() {
  *             // Implements count query
  *         }
  *     }
  * </pre>
- * </p>
- *
  * <p>
  * Pagination objects are {@link javax.enterprise.context.RequestScoped} by default and need this scope
  * to be active to work. When injecting a Pagination reference outside a {@link javax.enterprise.context.RequestScoped}
  * scope the resulting injection point will be <code>null</code>.
  * </p>
- *
  * <p>
  * It's possible to globaly configure certain aspects of pagination objects through the <i>demoiselle.properties</i>
  * file. The pertaining configuration properties are:
- *
  * <pre>
  * <code><b>demoiselle.pagination.page.size</b></code>: Default size of a page, defining the number of entities shown in a single page.
  * This property will set the default for newly injected instances for that request but can be redefined by calling {@link #setPageSize(int)}
  * on an injected instance.
- *
  * <code><b>demoiselle.pagination.page.maxlinks</b></code>: Intended for the presentation layer, this property defines
  * the maximum amount of page numbers to show around the current page for the user to select. For example, if the total amount of pages
  * for a certain entity is 100 and we are at page 12 and this property value is 5, the presentation layer is instructed
  * to then show links as:
- *
  * [Previous Page][10][11][12][13][14][Next Page]
- *
  * <code><b>demoiselle.pagination.page.requestparameter</b></code>: Name of a request parameter to be read that will set the
  * current page if present on the current request. If this configuration parameter is defined the user can send a request
  * parameter with that name and a value that can be converted to {@link Integer}. If this is done then any pagination
  * objects injected on that request will automatically have the {@link #setCurrentPage(int)} method called passing
  * that value as argument.
- *
  * </pre>
  * </p>
  *
@@ -170,87 +150,97 @@ public interface Pagination {
 	/**
 	 * Returns the (one-indexed) current page.
 	 *
+	 * @return The current page
 	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
-	 * one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 *                               one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
 	 */
 	int getCurrentPage();
 
 	/**
 	 * Sets the (one-indexed) current page.
+	 *
+	 * @param currentPage The current page this instance should point to
 	 */
 	void setCurrentPage(int currentPage);
 
 	/**
-	 * Returns the number of items per page.
+	 * @return the number of items per page.
 	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
-	 * one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 *                               one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
 	 */
 	int getPageSize();
 
 	/**
 	 * Sets the number of items per page.
+	 *
+	 * @param pageSize The number of items that should fit a page
 	 */
 	void setPageSize(int pageSize);
 
 	/**
-	 * Returns the total number of results or a negative number to indicate
+	 * @return the total number of results or a negative number to indicate
 	 * the number is unknown.
-	 *
 	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
-	 * one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 *                               one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
 	 */
 	long getTotalResults();
 
 	/**
 	 * Optional operation. Sets the total number of results and calculates the number of pages.
 	 * Setting this to a negative value will indicate to clients that the total number of results is unknown.
+	 *
+	 * @param totalResults number of results in the full list to be paginated
 	 */
 	void setTotalResults(long totalResults);
 
 	/**
-	 * Returns the total number of pages.
+	 * @return the total number of pages.
 	 *
 	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
-	 * one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 *                               one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
 	 */
 	int getTotalPages();
 
 	/**
-	 * Returns the position for the first record according to current page and page size, or a
+	 * @return the position for the first record according to current page and page size, or a
 	 * negative number if this pagination hasn't been initialized.
 	 *
 	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
-	 * one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 *                               one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
 	 */
 	int getFirstResult();
 
 	/**
 	 * Sets the position for the first record and hence calculates current page according to page size.
+	 *
+	 * @param firstResult position of the first result on the full record list
 	 */
 	void setFirstResult(int firstResult);
 
 	/**
 	 * <p>Returns a list of page numbers from <code>{@link #getCurrentPage()} - pageAmountBefore</code> to
 	 * <code>{@link #getCurrentPage()} + (pageAmount - 1)</code>.</p>
+	 *
 	 * <p>For example, if the current page is 8 and this method is called with <code>pageAmount = 3</code>
-	 * and <code>pageAmountBefore=2</code> we get an array with the following values:
+	 * and <code>pageAmountBefore=2</code> we get an array with the following values:</p>
+	 *
 	 * <pre>
 	 *     [6, 7, 8, 9, 10]
 	 * </pre>
-	 * </p>
 	 *
-	 * @param pagesAfterCurrent       Amount of pages to return after the current page
+	 * @param pagesAfterCurrent  Amount of pages to return after the current page
 	 * @param pagesBeforeCurrent Amount of pages to list before the current page
 	 * @return An array of the page numbers that fit the criteria.
-	 *
 	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
-	 * one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 *                               one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
 	 */
 	int[] getPages(int pagesAfterCurrent, int pagesBeforeCurrent);
 
 	/**
 	 * Same as calling {@link #getPages(int, int)} with pagesBeforeCurrent=0.
 	 *
+	 * @param pageAmount How many pages ahead of the current page to put on the returned array
+	 * @return An array of the page numbers that fit the criteria.
 	 * @see #getPages(int, int)
 	 */
 	int[] getPages(int pageAmount);
@@ -262,54 +252,56 @@ public interface Pagination {
 	 * so that the {@link #getCurrentPage()} stays in the middle (unless it's the first or last page) and the remaining pages
 	 * are distributed around the current one.
 	 *
+	 * @return An array of the page numbers that fit the criteria.
+	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
+	 *                               one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
 	 * @see org.demoiselle.internal.configuration.PaginationConfig
 	 * @see #getPages(int, int)
-	 *
-	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
-	 * one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
 	 */
 	int[] getPages();
 
 	/**
 	 * Same as {@link #getPages()}, but returns result as a {@link List} of {@link Integer}.
 	 *
-	 * @see #getPages()
-	 *
+	 * @return A list of the page numbers that fit the criteria.
 	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
-	 * one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 *                               one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 * @see #getPages()
 	 */
 	List<Integer> getPagesList();
 
 	/**
 	 * Same as {@link #getPages(int)}, but returns result as a {@link List} of {@link Integer}.
 	 *
-	 * @see #getPages(int)
-	 *
+	 * @param pagesAfterCurrent How many pages to place after the current page
+	 * @return A list of the page numbers that fit the criteria.
 	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
-	 * one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 *                               one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 * @see #getPages(int)
 	 */
 	List<Integer> getPagesList(int pagesAfterCurrent);
 
 	/**
 	 * Same as {@link #getPages(int, int)}, but returns result as a {@link List} of {@link Integer}.
 	 *
+	 * @param pagesAfterCurrent How many pages to place after the current page
+	 * @param pagesBeforeCurrent How many pages to place before the current page
+	 * @return A list of the page numbers that fit the criteria.
 	 * @see #getPages(int, int)
 	 */
 	List<Integer> getPagesList(int pagesAfterCurrent, int pagesBeforeCurrent);
 
 	/**
 	 * @return <code>true</code> if {@link #getCurrentPage()} == 1.
-	 *
 	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
-	 * one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 *                               one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
 	 */
 	boolean isFirstPage();
 
 	/**
 	 * @return <code>true</code> if {@link #getCurrentPage()} == {@link #getTotalPages()}.
-	 *
 	 * @throws IllegalStateException If the pagination hasn't been initialized by first calling
-	 * one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
+	 *                               one of {@link #setCurrentPage(int)}, {@link #setFirstResult(int)} or {@link #setTotalResults(long)}.
 	 */
 	boolean isLastPage();
 
