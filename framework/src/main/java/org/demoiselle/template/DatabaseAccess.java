@@ -76,12 +76,14 @@ public interface DatabaseAccess<T, I> extends Serializable {
 	void remove(I id);
 
 	/**
+	 * @param ids A list of identifies to find entities to be removed.
 	 * @return The amount of entities removed.
 	 * @see #remove(Object)
 	 */
 	int remove(List<I> ids);
 
 	/**
+	 * @param ids A set of one or more identifies to find entities to be removed.
 	 * @return The amount of entities removed.
 	 * @see #remove(Object)
 	 */
@@ -124,6 +126,8 @@ public interface DatabaseAccess<T, I> extends Serializable {
 	List<T> loadList(List<I> ids);
 
 	/**
+	 * @param ids A list of one or more primary keys to query the entity.
+	 * @return A (possibly empty) list of entities that have a matching primary key.
 	 * @see #loadList(List)
 	 */
 	List<T> loadList(I... ids);
