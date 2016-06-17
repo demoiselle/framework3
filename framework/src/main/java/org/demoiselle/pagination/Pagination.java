@@ -100,7 +100,7 @@ import java.util.List;
  *         private Pagination bookmarkPagination;
  *         public List &#60; Bookmark &#62; listAll() {
  *             Query bookmarkQuery = //... Initialize database query
- *             if (bookmarkPagination != null &#38;&#38; bookmarkPagination.getFirstResult() >= 0) {
+ *             if (bookmarkPagination != null &#38;&#38; bookmarkPagination.getFirstResult() &#62;= 0) {
  *                 // Indicates to our presentation layer the maximum number of bookmarks
  *                 bookmarkPagination.setTotalResults( this.countAll() );
  *                 bookmarkQuery.setFirstResult( bookmarkPagination.getFirstResult() );
@@ -120,7 +120,7 @@ import java.util.List;
  * </p>
  * <p>
  * It's possible to globaly configure certain aspects of pagination objects through the <i>demoiselle.properties</i>
- * file. The pertaining configuration properties are:
+ * file. The pertaining configuration properties are:</p>
  * <pre>
  * <code><b>demoiselle.pagination.page.size</b></code>: Default size of a page, defining the number of entities shown in a single page.
  * This property will set the default for newly injected instances for that request but can be redefined by calling {@link #setPageSize(int)}
@@ -136,7 +136,6 @@ import java.util.List;
  * objects injected on that request will automatically have the {@link #setCurrentPage(int)} method called passing
  * that value as argument.
  * </pre>
- * </p>
  *
  * @author SERPRO
  */
