@@ -204,7 +204,7 @@
 
 	<properties>
 		<project.alias>framework3</project.alias>
-		<site.url>${site.unversioned.url}/${version}</site.url>
+		<site.url>${site.unversioned.url}/${project.version}</site.url>
 		<site.unversioned.url>${htdocs.url}/${project.context}</site.unversioned.url>
 		<htdocs.url>sftp://web.sourceforge.net/home/project-web/demoiselle/htdocs</htdocs.url>
 		<project.context>${project.alias}</project.context>
