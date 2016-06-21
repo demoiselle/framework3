@@ -4,7 +4,7 @@
 
 	<groupId>br.gov.serpro.demoiselle</groupId>
 	<artifactId>bookmark2</artifactId>
-	<version>3.0.0-ALPHA1</version>
+	<version>3.0.0-ALPHA2-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>Demoiselle JSF+JPA Sample Project</name>
@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-parent</artifactId>
-		<version>3.0.0-ALPHA1</version>
+		<version>3.0.0-ALPHA2-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 
@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>br.gov.frameworkdemoiselle</groupId>
 			<artifactId>demoiselle</artifactId>
-			<version>3.0.0-ALPHA1</version>
+			<version>3.0.0-ALPHA2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
