@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>br.gov.frameworkdemoiselle</groupId>
 		<artifactId>demoiselle-project</artifactId>
-		<version>3.0.0-ALPHA2</version>
+		<version>3.0.0-ALPHA3-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
